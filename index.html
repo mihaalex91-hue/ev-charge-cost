@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>EV Charging Cost Calculator UK – Monthly Cost, Cost per Mile & Tariff Comparison</title>
 <meta name="description" content="Work out what it costs to charge your electric car in the UK. Compare Intelligent Octopus Go, EDF GoElectric, E.ON Next Drive and the price cap, see cost per mile, and how much you save versus petrol.">
-<link rel="canonical" href="https://YOUR-DOMAIN.co.uk/">
+<link rel="canonical" href="https://evchargecost.co.uk/">
 <meta property="og:title" content="EV Charging Cost Calculator UK">
 <meta property="og:description" content="Monthly EV charging cost, cost per mile and tariff comparison for UK drivers.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://evchargecost.co.uk/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -103,6 +104,19 @@ input[type=range]{width:100%;accent-color:var(--green);margin:0}
 .bars .cost small.save{color:var(--green)}
 @media (max-width:480px){.bars li{grid-template-columns:1fr auto}.bars .bar{grid-column:1 / -1;order:3}}
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+
+.checked{padding:0 24px 20px;font-size:.82rem;color:var(--ink-soft)}
+.checked time{font-weight:600;color:var(--ink)}
+
+/* Recommendation */
+.reco{margin-top:28px;background:var(--night);color:var(--night-ink);border-radius:14px;padding:26px 24px}
+.reco-inner{max-width:64ch}
+.reco-kicker{color:var(--night-soft);font-size:.9rem;margin-bottom:6px}
+.reco h2{color:var(--night-ink);font-size:1.5rem;margin-bottom:10px}
+.reco p{color:var(--night-ink)}
+.reco ul{margin:14px 0 20px;padding-left:18px;color:var(--night-soft);font-size:.92rem}
+.reco li{margin-bottom:4px}
+.btn.amber{background:var(--amber);color:#1B1B1B}
 
 /* Offers / affiliate slots */
 .offers{margin-top:36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
@@ -235,6 +249,17 @@ footer p{max-width:80ch;margin-bottom:8px}
       <p>Monthly cost with your inputs above. Standing charges and your household's daytime usage aren't included, so treat this as the charging-only difference.</p>
     </header>
     <ul class="bars" id="bars"></ul>
+    <p class="checked">Rates checked <time id="ratesChecked">29 September 2026</time>. Peak rates vary by region – use your bill for exact figures.</p>
+  </div>
+</section>
+
+<section class="reco" aria-labelledby="reco-h" id="reco">
+  <div class="reco-inner">
+    <p class="reco-kicker" id="reco-h">Best fit for how you charge</p>
+    <h2 id="recoTitle"></h2>
+    <p id="recoWhy"></p>
+    <ul id="recoNotes"></ul>
+    <a class="btn amber" id="recoBtn" href="#" rel="nofollow sponsored noopener" target="_blank"></a>
   </div>
 </section>
 
@@ -296,17 +321,20 @@ footer p{max-width:80ch;margin-bottom:8px}
 
 <script>
 // ---- Tariff data (edit here when prices change; rates in p/kWh) ----
+// url = where the "switch" button sends people. Replace with tracked affiliate links once approved.
+// hours = length of cheap window; smart = needs a compatible car/charger; cond = extra conditions shown to the user.
 const TARIFFS = [
-  {id:"cap",   name:"Standard price cap",      off:26.32, peak:26.32, win:"No off-peak", flat:true},
-  {id:"iog",   name:"Intelligent Octopus Go",  off:8.00,  peak:27.00, win:"23:30–05:30 + smart slots"},
-  {id:"go",    name:"Octopus Go",              off:8.50,  peak:27.00, win:"00:30–05:30"},
-  {id:"edf",   name:"EDF GoElectric",          off:6.99,  peak:30.00, win:"23:00–06:00"},
-  {id:"eon",   name:"E.ON Next Drive Smart",   off:8.50,  peak:30.87, win:"00:00–06:00"},
-  {id:"bg",    name:"British Gas EV Power",    off:9.00,  peak:27.50, win:"00:00–05:00"},
-  {id:"uw",    name:"Utility Warehouse EV",    off:6.90,  peak:27.16, win:"00:00–05:00 GMT, bundle required"},
-  {id:"ovo",   name:"OVO Charge Anytime",      off:14.00, peak:14.00, win:"Any time, EV charging only", flat:true},
-  {id:"custom",name:"My own rates",            off:8.00,  peak:27.00, win:"Enter your rates"},
+  {id:"cap",   name:"Standard price cap",      off:26.32, peak:26.32, win:"No off-peak", flat:true, hours:0},
+  {id:"iog",   name:"Intelligent Octopus Go",  off:8.00,  peak:27.00, win:"23:30–05:30 + smart slots", hours:6, smart:true, url:"https://octopus.energy/smart/intelligent-octopus-go/", cond:["Needs a compatible car or charger for smart scheduling","Smart meter required","No exit fee"]},
+  {id:"go",    name:"Octopus Go",              off:8.50,  peak:27.00, win:"00:30–05:30", hours:5, url:"https://octopus.energy/smart/go/", cond:["Works with any car and charger","Smart meter required"]},
+  {id:"edf",   name:"EDF GoElectric",          off:6.99,  peak:30.00, win:"23:00–06:00", hours:7, url:"https://www.edfenergy.com/electric-cars/ev-tariffs", cond:["Works with any car and charger","Higher peak rate – check your daytime usage","Exit fees if you leave within two years"]},
+  {id:"eon",   name:"E.ON Next Drive Smart",   off:8.50,  peak:30.87, win:"00:00–06:00", hours:6, smart:true, url:"https://www.eonnext.com/electric-vehicles", cond:["Smart charging through the E.ON app","Higher peak rate – check your daytime usage","No exit fee"]},
+  {id:"bg",    name:"British Gas EV Power",    off:9.00,  peak:27.50, win:"00:00–05:00", hours:5, url:"https://www.britishgas.co.uk/energy/electric-vehicles.html", cond:["Smart meter required"]},
+  {id:"uw",    name:"Utility Warehouse EV",    off:6.90,  peak:27.16, win:"00:00–05:00 GMT, bundle required", hours:5, url:"https://uw.co.uk/", cond:["Only with two other UW services (broadband, mobile or boiler cover)","Window shifts to 01:00–06:00 in summer time"]},
+  {id:"ovo",   name:"OVO Charge Anytime",      off:14.00, peak:14.00, win:"Any time, EV charging only", flat:true, hours:24, smart:true, url:"https://www.ovoenergy.com/electric-cars/charge-anytime", cond:["Cheap rate applies to the car only, not the house","Needs a compatible car or charger","Good if you can't charge overnight"]},
+  {id:"custom",name:"My own rates",            off:8.00,  peak:27.00, win:"Enter your rates", hours:6},
 ];
+const PUBLIC_OFFER = {name:"A public charging plan", url:"https://www.zap-map.com/", cond:["Most of your charging is public, so a home tariff won't change much","Network subscriptions and lamp-post chargers cut the per-kWh price","Workplace charging, if available, is usually cheapest"]};
 
 const $ = id => document.getElementById(id);
 const gbp = n => "£" + n.toLocaleString("en-GB",{minimumFractionDigits:0,maximumFractionDigits:0});
@@ -376,6 +404,50 @@ function calc(){
     const note=r.t.id==="cap"?"<small>reference</small>":(save>0?"<small class='save'>saves "+gbp(save*12)+"/yr</small>":"<small>"+gbp(-save*12)+"/yr more</small>");
     return `<li class="${cls}"><div class="name">${r.t.name}${r.t.id===sel?" (selected)":""}<small>${r.t.win} · ${r.t.off}p off-peak</small></div><div class="bar"><i style="width:${(r.cost/max*100).toFixed(1)}%"></i></div><div class="cost">${gbp(r.cost)}/mo${note}</div></li>`;
   }).join("");
+
+  recommend(rows, cap, {miles, homePct, eff});
+}
+
+// Picks the tariff that fits the person's situation, not just the cheapest headline rate.
+function recommend(rows, capCost, s){
+  const esc=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+  const set=(title,why,notes,btn,url)=>{
+    $("recoTitle").textContent=title; $("recoWhy").textContent=why;
+    $("recoNotes").innerHTML=notes.map(n=>`<li>${esc(n)}</li>`).join("");
+    $("recoBtn").textContent=btn; $("recoBtn").href=url;
+  };
+
+  // Mostly public charging: a home tariff barely matters.
+  if(s.homePct<0.5){
+    set(PUBLIC_OFFER.name,
+      `Only ${Math.round(s.homePct*100)}% of your charging happens at home, so the biggest saving is on the public side.`,
+      PUBLIC_OFFER.cond,"Find cheaper public charging",PUBLIC_OFFER.url);
+    return;
+  }
+
+  const candidates=rows.filter(r=>r.t.url && !r.t.flat);
+  if(!candidates.length) return;
+  const nightlyKwh=s.miles/s.eff/0.9*s.homePct/365;         // kWh needed per night on average
+  const longWindowNeeded=nightlyKwh>28;                       // ~7 kW charger × 4 h; high-mileage drivers need the 6–7 h windows
+  const cheapest=candidates[0];
+  // Score: cost first, then prefer longer windows for high-mileage drivers, then fewer strings attached.
+  let best=cheapest;
+  if(longWindowNeeded){
+    const longer=candidates.filter(r=>r.t.hours>=6 && r.cost<=cheapest.cost*1.12);
+    if(longer.length) best=longer[0];
+  }
+  if(best.t.id==="uw"){ // bundle requirement puts most people off; offer it as a note, lead with the next one
+    const alt=candidates.find(r=>r.t.id!=="uw"); if(alt) best=alt;
+  }
+  const saving=(capCost-best.cost)*12;
+  const why = longWindowNeeded
+    ? `You need around ${Math.round(nightlyKwh)} kWh a night, so a longer off-peak window matters more than a fraction of a penny per kWh.`
+    : `At your mileage it's the cheapest realistic option: about ${gbp(best.cost)} a month for charging, ${gbp(Math.max(saving,0))} a year less than the price cap.`;
+  const notes=[...(best.t.cond||[])];
+  if(best.t.smart) notes.push("If your car or charger isn't compatible, EDF GoElectric or Octopus Go work with anything.");
+  const uw=candidates.find(r=>r.t.id==="uw");
+  if(uw && uw.cost<best.cost) notes.push(`Utility Warehouse would be ${gbp((best.cost-uw.cost)*12)} a year cheaper still, if you're happy to bundle broadband or mobile with them.`);
+  set(best.t.name, why, notes, `See ${best.t.name}`, best.t.url);
 }
 
 $("tariff").addEventListener("change",()=>{loadTariff();calc();});
