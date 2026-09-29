@@ -1,0 +1,1040 @@
+{
+ "meta": {
+  "generated": "2026-09-29",
+  "sources": {
+   "sales": [
+    "SMMT via best-selling-cars.com (2025 full year)",
+    "SMMT via Carwow (August 2026 top 10)",
+    "BYD UK press release (May 2026)"
+   ],
+   "specs": "EV Database UK cheatsheets: useable battery and real-world energy consumption (Wh/mi), Sept 2026; AC/DC charging power from manufacturer UK specs (see verify flags)"
+  },
+  "conventions": {
+   "wh_per_mi": "real-world combined, EV Database",
+   "mi_per_kwh": "1000 / wh_per_mi",
+   "full_charge_time_7kw_h": "usable_kwh / 7 / 0.9 (charging losses)",
+   "full_charge_cost": "usable_kwh / 0.9 * rate"
+  }
+ },
+ "cars": [
+  {
+   "slug": "tesla-model-y",
+   "make": "Tesla",
+   "model": "Model Y",
+   "rank": {
+    "uk2025": 1,
+    "aug2026": 2
+   },
+   "on_sale": "2022–present (Juniper facelift 2025)",
+   "variants": [
+    {
+     "name": "RWD",
+     "usable_kwh": 60,
+     "wh_per_mi": 255,
+     "ac_kw": 11,
+     "dc_kw": 175,
+     "battery_type": "LFP"
+    },
+    {
+     "name": "Premium RWD (Long Range)",
+     "usable_kwh": 74,
+     "wh_per_mi": 260,
+     "ac_kw": 11,
+     "dc_kw": 250
+    },
+    {
+     "name": "Premium AWD (Long Range)",
+     "usable_kwh": 79,
+     "wh_per_mi": 268,
+     "ac_kw": 11,
+     "dc_kw": 250
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "standard",
+   "verify": [],
+   "notes": [
+    "UK's best-selling EV four years running; Supercharger access and heat pump as standard",
+    "LFP RWD version is happy being charged to 100% daily — useful for cheap-tariff overnight charging"
+   ]
+  },
+  {
+   "slug": "tesla-model-3",
+   "make": "Tesla",
+   "model": "Model 3",
+   "rank": {
+    "uk2025": 2,
+    "aug2026": 1
+   },
+   "on_sale": "2019–present (Highland facelift 2024)",
+   "variants": [
+    {
+     "name": "RWD (Standard)",
+     "usable_kwh": 60,
+     "wh_per_mi": 218,
+     "ac_kw": 11,
+     "dc_kw": 170,
+     "battery_type": "LFP"
+    },
+    {
+     "name": "Premium RWD (Long Range)",
+     "usable_kwh": 79,
+     "wh_per_mi": 219,
+     "ac_kw": 11,
+     "dc_kw": 250
+    },
+    {
+     "name": "Premium AWD",
+     "usable_kwh": 79,
+     "wh_per_mi": 232,
+     "ac_kw": 11,
+     "dc_kw": 250
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "standard",
+   "verify": [
+    "dc_kw RWD: Tesla quotes 170 kW; EV Database lists 175 for the same LFP pack in the Model Y — use 170–175"
+   ],
+   "notes": [
+    "The most efficient car in the whole EV Database at ~4.6 mi/kWh — cheapest mainstream EV per mile in the UK",
+    "Best-selling EV in August 2026"
+   ]
+  },
+  {
+   "slug": "audi-q4-e-tron",
+   "make": "Audi",
+   "model": "Q4 e-tron",
+   "rank": {
+    "uk2025": 3
+   },
+   "on_sale": "2021–present",
+   "variants": [
+    {
+     "name": "45 (59 kWh)",
+     "usable_kwh": 59,
+     "wh_per_mi": 281,
+     "ac_kw": 11,
+     "dc_kw": 160
+    },
+    {
+     "name": "45 quattro (77 kWh)",
+     "usable_kwh": 77,
+     "wh_per_mi": 296,
+     "ac_kw": 11,
+     "dc_kw": 175
+    },
+    {
+     "name": "55 quattro performance",
+     "usable_kwh": 79,
+     "wh_per_mi": 308,
+     "ac_kw": 11,
+     "dc_kw": 175
+    },
+    {
+     "name": "35 (52 kWh, 2021–23)",
+     "usable_kwh": 52,
+     "wh_per_mi": 300,
+     "ac_kw": 7.2,
+     "dc_kw": 110,
+     "legacy": true
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "standard from 2026 model year; optional on 2021–25 cars",
+   "verify": [
+    "35 variant figures from EV Database archive (memory)"
+   ],
+   "notes": [
+    "Huge fleet/company-car population (14,433 registered in 2025) — many owners now coming off 3-year leases",
+    "Heat pump was a paid option on most years; efficiency drops noticeably in winter without it"
+   ]
+  },
+  {
+   "slug": "audi-q6-e-tron",
+   "make": "Audi",
+   "model": "Q6 e-tron",
+   "rank": {
+    "uk2025": 4,
+    "aug2026": 10
+   },
+   "on_sale": "2024–present",
+   "variants": [
+    {
+     "name": "Q6 e-tron (RWD)",
+     "usable_kwh": 75.8,
+     "wh_per_mi": 309,
+     "ac_kw": 11,
+     "dc_kw": 225
+    },
+    {
+     "name": "Q6 e-tron quattro",
+     "usable_kwh": 94.9,
+     "wh_per_mi": 322,
+     "ac_kw": 11,
+     "dc_kw": 269
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "standard",
+   "verify": [],
+   "notes": [
+    "800-volt platform: 10–80% in ~21 min on a 350 kW charger",
+    "Large battery means a full home charge from empty takes ~9 h on 7 kW — check your tariff's window length"
+   ],
+   "ac_kw_option": 22
+  },
+  {
+   "slug": "ford-explorer",
+   "make": "Ford",
+   "model": "Explorer",
+   "rank": {
+    "uk2025": 5
+   },
+   "on_sale": "2024–present",
+   "variants": [
+    {
+     "name": "Standard Range RWD",
+     "usable_kwh": 58,
+     "wh_per_mi": 283,
+     "ac_kw": 11,
+     "dc_kw": 135
+    },
+    {
+     "name": "Extended Range RWD",
+     "usable_kwh": 79,
+     "wh_per_mi": 287,
+     "ac_kw": 11,
+     "dc_kw": 185
+    },
+    {
+     "name": "Extended Range AWD",
+     "usable_kwh": 77,
+     "wh_per_mi": 291,
+     "ac_kw": 11,
+     "dc_kw": 185
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "optional",
+   "verify": [],
+   "notes": [
+    "Built on VW's MEB platform — same battery and charging hardware as the ID.4 and Enyaq",
+    "Strong 2025 seller (12,237) with a lot of Ford salary-sacrifice drivers"
+   ]
+  },
+  {
+   "slug": "bmw-i4",
+   "make": "BMW",
+   "model": "i4",
+   "rank": {
+    "uk2025": 6
+   },
+   "on_sale": "2021–present",
+   "variants": [
+    {
+     "name": "eDrive35",
+     "usable_kwh": 67.1,
+     "wh_per_mi": 249,
+     "ac_kw": 11,
+     "dc_kw": 180
+    },
+    {
+     "name": "eDrive40",
+     "usable_kwh": 81.3,
+     "wh_per_mi": 250,
+     "ac_kw": 11,
+     "dc_kw": 205
+    },
+    {
+     "name": "M60 xDrive",
+     "usable_kwh": 81.3,
+     "wh_per_mi": 285,
+     "ac_kw": 11,
+     "dc_kw": 205
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "standard",
+   "verify": [],
+   "notes": [
+    "Very efficient for its size (~4 mi/kWh in the eDrive40) — saloon shape beats the SUVs on cost per mile",
+    "Popular company car: 12,158 UK registrations in 2025"
+   ]
+  },
+  {
+   "slug": "skoda-enyaq",
+   "make": "Skoda",
+   "model": "Enyaq",
+   "rank": {
+    "uk2025": 7,
+    "aug2026": 6
+   },
+   "on_sale": "2021–present (facelift 2025)",
+   "variants": [
+    {
+     "name": "60",
+     "usable_kwh": 58,
+     "wh_per_mi": 270,
+     "ac_kw": 11,
+     "dc_kw": 165
+    },
+    {
+     "name": "85",
+     "usable_kwh": 77,
+     "wh_per_mi": 270,
+     "ac_kw": 11,
+     "dc_kw": 175
+    },
+    {
+     "name": "85x (AWD)",
+     "usable_kwh": 77,
+     "wh_per_mi": 280,
+     "ac_kw": 11,
+     "dc_kw": 175
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "optional",
+   "verify": [],
+   "notes": [
+    "Family favourite with steady sales every year since 2021 — one of the biggest used-EV pools in the UK",
+    "Pre-2024 cars charge slower (up to 135 kW) than the facelift; check the model year"
+   ]
+  },
+  {
+   "slug": "kia-ev3",
+   "make": "Kia",
+   "model": "EV3",
+   "rank": {
+    "uk2025": 8,
+    "aug2026": 9
+   },
+   "on_sale": "2024–present",
+   "variants": [
+    {
+     "name": "Standard Range (58.3 kWh)",
+     "usable_kwh": 55,
+     "wh_per_mi": 275,
+     "ac_kw": 11,
+     "dc_kw": 101
+    },
+    {
+     "name": "Long Range (81.4 kWh)",
+     "usable_kwh": 78,
+     "wh_per_mi": 279,
+     "ac_kw": 11,
+     "dc_kw": 128
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "standard on Air LR and above",
+   "verify": [
+    "heat pump by trim"
+   ],
+   "notes": [
+    "Big battery in a small car: 78 kWh usable gives ~280 real miles",
+    "Rapid charging is modest (128 kW) so home charging matters more than for rivals"
+   ]
+  },
+  {
+   "slug": "skoda-elroq",
+   "make": "Skoda",
+   "model": "Elroq",
+   "rank": {
+    "uk2025": 9,
+    "aug2026": 7
+   },
+   "on_sale": "2025–present",
+   "variants": [
+    {
+     "name": "60",
+     "usable_kwh": 58,
+     "wh_per_mi": 276,
+     "ac_kw": 11,
+     "dc_kw": 165
+    },
+    {
+     "name": "85",
+     "usable_kwh": 77,
+     "wh_per_mi": 280,
+     "ac_kw": 11,
+     "dc_kw": 175
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "optional",
+   "verify": [],
+   "notes": [
+    "Slightly smaller Enyaq at a lower price; same batteries and charging",
+    "10,713 sold in its first year in the UK"
+   ]
+  },
+  {
+   "slug": "volvo-ex30",
+   "make": "Volvo",
+   "model": "EX30",
+   "rank": {
+    "uk2025": 10
+   },
+   "on_sale": "2024–present",
+   "variants": [
+    {
+     "name": "Single Motor (LFP)",
+     "usable_kwh": 49,
+     "wh_per_mi": 288,
+     "ac_kw": 11,
+     "dc_kw": 134,
+     "battery_type": "LFP"
+    },
+    {
+     "name": "Single Motor Extended Range",
+     "usable_kwh": 65,
+     "wh_per_mi": 289,
+     "ac_kw": 22,
+     "dc_kw": 153
+    },
+    {
+     "name": "Twin Motor Performance",
+     "usable_kwh": 65,
+     "wh_per_mi": 310,
+     "ac_kw": 22,
+     "dc_kw": 153
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "optional (Plus/Ultra)",
+   "verify": [
+    "22 kW AC on which trims"
+   ],
+   "notes": [
+    "Extended Range versions take 22 kW AC — rare, useful on public lamp-post and workplace chargers",
+    "Small LFP battery on the base car: cheap to fill but needs charging more often"
+   ]
+  },
+  {
+   "slug": "renault-5",
+   "make": "Renault",
+   "model": "5 E-Tech",
+   "rank": {
+    "aug2026": 8,
+    "note": "best-selling EV to private buyers early 2026"
+   },
+   "on_sale": "2025–present",
+   "variants": [
+    {
+     "name": "40 kWh (120hp)",
+     "usable_kwh": 40,
+     "wh_per_mi": 250,
+     "ac_kw": 11,
+     "dc_kw": 80
+    },
+    {
+     "name": "52 kWh (150hp)",
+     "usable_kwh": 52,
+     "wh_per_mi": 248,
+     "ac_kw": 11,
+     "dc_kw": 100
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "standard",
+   "verify": [],
+   "notes": [
+    "Top EV with private buyers in early 2026 — lots of first-time EV owners asking basic charging-cost questions",
+    "Small battery: a full charge from empty costs under £4 on an EV tariff and takes ~7.5 h on 7 kW"
+   ]
+  },
+  {
+   "slug": "mg4",
+   "make": "MG",
+   "model": "MG4",
+   "rank": {
+    "note": "top-5 UK EV 2023–2024; huge used pool"
+   },
+   "on_sale": "2022–present (2026 range renamed Urban/Premium)",
+   "variants": [
+    {
+     "name": "SE Standard Range (51 kWh, 2022–25)",
+     "usable_kwh": 50.8,
+     "wh_per_mi": 270,
+     "ac_kw": 7,
+     "dc_kw": 88,
+     "battery_type": "LFP"
+    },
+    {
+     "name": "SE/Trophy Long Range (64 kWh, 2022–25)",
+     "usable_kwh": 61.7,
+     "wh_per_mi": 280,
+     "ac_kw": 7,
+     "dc_kw": 135
+    },
+    {
+     "name": "Extended Range (77 kWh)",
+     "usable_kwh": 74.4,
+     "wh_per_mi": 276,
+     "ac_kw": 11,
+     "dc_kw": 144
+    },
+    {
+     "name": "Urban Long Range (2026)",
+     "usable_kwh": 52.8,
+     "wh_per_mi": 264,
+     "ac_kw": 11,
+     "dc_kw": 87
+    },
+    {
+     "name": "Urban Premium Long Range (2026)",
+     "usable_kwh": 52.8,
+     "wh_per_mi": 271,
+     "ac_kw": 11,
+     "dc_kw": 87
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "Trophy/Extended Range only",
+   "verify": [
+    "2022–25 SE/Trophy figures: EV Database archive (memory) — SE SR 88 kW DC / 7 kW AC, Trophy LR 135 kW / 7 kW"
+   ],
+   "notes": [
+    "The UK's default cheap EV since 2022 — enormous number of owners searching for running costs",
+    "Original SE cars only take 7 kW AC, so a 7 kW home charger is the ceiling anyway"
+   ]
+  },
+  {
+   "slug": "vauxhall-corsa-electric",
+   "make": "Vauxhall",
+   "model": "Corsa Electric",
+   "rank": {
+    "note": "top-10 UK EV 2021–2023"
+   },
+   "on_sale": "2020–present",
+   "variants": [
+    {
+     "name": "50 kWh (2020–23)",
+     "usable_kwh": 46.3,
+     "wh_per_mi": 257,
+     "ac_kw": 7.4,
+     "dc_kw": 100
+    },
+    {
+     "name": "51 kWh Long Range (2023+)",
+     "usable_kwh": 50.8,
+     "wh_per_mi": 248,
+     "ac_kw": 7.4,
+     "dc_kw": 100
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "standard",
+   "verify": [
+    "11 kW AC option"
+   ],
+   "notes": [
+    "One of the biggest used-EV pools in Britain from the Corsa-e years",
+    "Small battery, cheap to fill, but 7.4 kW AC means overnight charging needs ~6.5 h from empty"
+   ]
+  },
+  {
+   "slug": "peugeot-e-208",
+   "make": "Peugeot",
+   "model": "e-208",
+   "rank": {
+    "note": "strong 2020–2024 seller"
+   },
+   "on_sale": "2020–present",
+   "variants": [
+    {
+     "name": "50 kWh (2020–23)",
+     "usable_kwh": 46.3,
+     "wh_per_mi": 257,
+     "ac_kw": 7.4,
+     "dc_kw": 100
+    },
+    {
+     "name": "51 kWh (2023+)",
+     "usable_kwh": 50.8,
+     "wh_per_mi": 248,
+     "ac_kw": 7.4,
+     "dc_kw": 100
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "standard",
+   "verify": [
+    "11 kW AC option"
+   ],
+   "notes": [
+    "Mechanically identical to the Corsa Electric — same battery, motor and charging",
+    "Facelift cars gained a more efficient motor and ~10% more real range"
+   ]
+  },
+  {
+   "slug": "volkswagen-id3",
+   "make": "Volkswagen",
+   "model": "ID.3",
+   "rank": {
+    "note": "top-10 UK EV 2020–2022"
+   },
+   "on_sale": "2020–present (ID.3 Neo 2026)",
+   "variants": [
+    {
+     "name": "Pro (58 kWh, 2020–25)",
+     "usable_kwh": 58,
+     "wh_per_mi": 262,
+     "ac_kw": 11,
+     "dc_kw": 120
+    },
+    {
+     "name": "Pro S (77 kWh, 2021–25)",
+     "usable_kwh": 77,
+     "wh_per_mi": 268,
+     "ac_kw": 11,
+     "dc_kw": 170
+    },
+    {
+     "name": "Neo 58 kWh (2026)",
+     "usable_kwh": 58,
+     "wh_per_mi": 258,
+     "ac_kw": 11,
+     "dc_kw": 135
+    },
+    {
+     "name": "Neo 79 kWh (2026)",
+     "usable_kwh": 79,
+     "wh_per_mi": 263,
+     "ac_kw": 11,
+     "dc_kw": 185
+    }
+   ],
+   "default_variant": 0,
+   "heat_pump": "optional",
+   "verify": [
+    "Pro/Pro S figures are from the archive — confirm"
+   ],
+   "notes": [
+    "Early ID.3s (2020–21) charge at 100–120 kW DC; later cars are much quicker — model year matters for public charging cost",
+    "Very common on the used market at under £15k"
+   ]
+  },
+  {
+   "slug": "hyundai-ioniq-5",
+   "make": "Hyundai",
+   "model": "IONIQ 5",
+   "rank": {
+    "note": "top-10 UK EV 2022–2023"
+   },
+   "on_sale": "2021–present (facelift 2025)",
+   "variants": [
+    {
+     "name": "63 kWh RWD",
+     "usable_kwh": 60,
+     "wh_per_mi": 286,
+     "ac_kw": 11,
+     "dc_kw": 195
+    },
+    {
+     "name": "84 kWh RWD",
+     "usable_kwh": 80,
+     "wh_per_mi": 291,
+     "ac_kw": 11,
+     "dc_kw": 263
+    },
+    {
+     "name": "84 kWh AWD",
+     "usable_kwh": 80,
+     "wh_per_mi": 291,
+     "ac_kw": 11,
+     "dc_kw": 263
+    },
+    {
+     "name": "Standard Range 58 kWh (2021–24)",
+     "usable_kwh": 54,
+     "wh_per_mi": 300,
+     "ac_kw": 11,
+     "dc_kw": 175,
+     "legacy": true
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "standard (UK spec)",
+   "verify": [
+    "2021–24 Long Range 73/77 kWh variants not yet added (74 usable, ~220–235 kW)"
+   ],
+   "notes": [
+    "800-volt system: 10–80% in ~18 min at a 350 kW charger — one of the cheapest cars to rapid-charge per minute",
+    "Efficiency is only average (~3.4 mi/kWh) so home tariff choice matters more than for a Tesla"
+   ]
+  },
+  {
+   "slug": "kia-ev6",
+   "make": "Kia",
+   "model": "EV6",
+   "rank": {
+    "note": "top-10 UK EV 2022–2023"
+   },
+   "on_sale": "2021–present (facelift 2025)",
+   "variants": [
+    {
+     "name": "RWD (84 kWh)",
+     "usable_kwh": 80,
+     "wh_per_mi": 286,
+     "ac_kw": 11,
+     "dc_kw": 258
+    },
+    {
+     "name": "AWD (84 kWh)",
+     "usable_kwh": 80,
+     "wh_per_mi": 296,
+     "ac_kw": 11,
+     "dc_kw": 258
+    },
+    {
+     "name": "GT",
+     "usable_kwh": 80,
+     "wh_per_mi": 327,
+     "ac_kw": 11,
+     "dc_kw": 258
+    }
+   ],
+   "default_variant": 0,
+   "heat_pump": "standard (UK spec)",
+   "verify": [
+    "pre-facelift 77.4 kWh figures",
+    "dc_kw ~240 pre-facelift"
+   ],
+   "notes": [
+    "Same 800-volt platform as the IONIQ 5; pre-2025 cars have a 77.4 kWh (74 usable) battery",
+    "Strong lease/company-car base now reaching the used market"
+   ]
+  },
+  {
+   "slug": "polestar-2",
+   "make": "Polestar",
+   "model": "2",
+   "rank": {
+    "note": "top-10 UK EV 2021–2023"
+   },
+   "on_sale": "2020–present (rear-drive update 2024)",
+   "variants": [
+    {
+     "name": "Standard Range Single Motor",
+     "usable_kwh": 67,
+     "wh_per_mi": 268,
+     "ac_kw": 11,
+     "dc_kw": 135
+    },
+    {
+     "name": "Long Range Single Motor",
+     "usable_kwh": 79,
+     "wh_per_mi": 268,
+     "ac_kw": 11,
+     "dc_kw": 205
+    },
+    {
+     "name": "Long Range Dual Motor",
+     "usable_kwh": 79,
+     "wh_per_mi": 282,
+     "ac_kw": 11,
+     "dc_kw": 205
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "Plus Pack option",
+   "verify": [
+    "pre-2024 front-drive figures (~75 usable, 150 kW)"
+   ],
+   "notes": [
+    "2024-on rear-drive cars are ~15% more efficient than the original front-drive version",
+    "Heat pump only came with the Plus Pack — matters for winter costs"
+   ]
+  },
+  {
+   "slug": "byd-seal",
+   "make": "BYD",
+   "model": "Seal",
+   "rank": {
+    "note": "BYD = UK's #1 EV brand H1 2026"
+   },
+   "on_sale": "2023–present",
+   "variants": [
+    {
+     "name": "Design RWD (82.5 kWh)",
+     "usable_kwh": 82.5,
+     "wh_per_mi": 280,
+     "ac_kw": 11,
+     "dc_kw": 150,
+     "battery_type": "LFP Blade"
+    },
+    {
+     "name": "Excellence AWD",
+     "usable_kwh": 82.5,
+     "wh_per_mi": 300,
+     "ac_kw": 11,
+     "dc_kw": 150,
+     "battery_type": "LFP Blade"
+    }
+   ],
+   "default_variant": 0,
+   "heat_pump": "standard",
+   "verify": [],
+   "notes": [
+    "LFP Blade battery: BYD recommends regular 100% charges, ideal for overnight tariffs",
+    "DC charging is slow for the class (150 kW) — public rapid charging is comparatively poor value"
+   ]
+  },
+  {
+   "slug": "byd-sealion-7",
+   "make": "BYD",
+   "model": "Sealion 7",
+   "rank": {
+    "note": "fastest-rising SUV 2026"
+   },
+   "on_sale": "2025–present",
+   "variants": [
+    {
+     "name": "Comfort RWD (82.5 kWh)",
+     "usable_kwh": 82.5,
+     "wh_per_mi": 317,
+     "ac_kw": 11,
+     "dc_kw": 150,
+     "battery_type": "LFP Blade"
+    },
+    {
+     "name": "Design AWD (82.5 kWh)",
+     "usable_kwh": 82.5,
+     "wh_per_mi": 330,
+     "ac_kw": 11,
+     "dc_kw": 150,
+     "battery_type": "LFP Blade"
+    },
+    {
+     "name": "Excellence AWD (91.3 kWh)",
+     "usable_kwh": 91.3,
+     "wh_per_mi": 338,
+     "ac_kw": 11,
+     "dc_kw": 230,
+     "battery_type": "LFP Blade"
+    }
+   ],
+   "default_variant": 0,
+   "heat_pump": "standard",
+   "verify": [],
+   "notes": [
+    "One of the thirstier family SUVs (~3.1 mi/kWh) — tariff choice makes a £100+/yr difference",
+    "Big battery + 7 kW charger = ~12 h from empty; only an issue if you regularly arrive nearly flat"
+   ]
+  },
+  {
+   "slug": "byd-dolphin",
+   "make": "BYD",
+   "model": "Dolphin",
+   "rank": {
+    "note": "BYD's volume hatch; plus Dolphin Surf city car"
+   },
+   "on_sale": "2023–present",
+   "variants": [
+    {
+     "name": "Dolphin (60.4 kWh)",
+     "usable_kwh": 60.5,
+     "wh_per_mi": 281,
+     "ac_kw": 11,
+     "dc_kw": 88,
+     "battery_type": "LFP Blade"
+    },
+    {
+     "name": "Dolphin Surf Boost (43.2 kWh)",
+     "usable_kwh": 43.2,
+     "wh_per_mi": 262,
+     "ac_kw": 11,
+     "dc_kw": 85,
+     "battery_type": "LFP Blade"
+    },
+    {
+     "name": "Dolphin Surf Active (30 kWh)",
+     "usable_kwh": 30,
+     "wh_per_mi": 261,
+     "ac_kw": 7,
+     "dc_kw": 65,
+     "battery_type": "LFP Blade"
+    }
+   ],
+   "default_variant": 0,
+   "heat_pump": "standard",
+   "verify": [
+    "Active ac_kw/dc_kw"
+   ],
+   "notes": [
+    "Dolphin Surf is one of the cheapest new EVs in Britain — full charge from empty for about £2.50 on an EV tariff",
+    "Slow DC charging (85–88 kW) makes public rapid charging poor value; home charging is the whole story"
+   ]
+  },
+  {
+   "slug": "nissan-leaf",
+   "make": "Nissan",
+   "model": "Leaf",
+   "rank": {
+    "note": "largest older-EV pool in UK; all-new 2026 model"
+   },
+   "on_sale": "2011–2025 (Mk1/Mk2), 2026–present (Mk3)",
+   "variants": [
+    {
+     "name": "Mk2 40 kWh (2018–25)",
+     "usable_kwh": 39,
+     "wh_per_mi": 300,
+     "ac_kw": 6.6,
+     "dc_kw": 46,
+     "connector": "CHAdeMO"
+    },
+    {
+     "name": "Mk2 e+ 62 kWh (2019–25)",
+     "usable_kwh": 59,
+     "wh_per_mi": 300,
+     "ac_kw": 6.6,
+     "dc_kw": 100,
+     "connector": "CHAdeMO"
+    },
+    {
+     "name": "Mk3 Standard Range 52 kWh (2026)",
+     "usable_kwh": 52.9,
+     "wh_per_mi": 265,
+     "ac_kw": 11,
+     "dc_kw": 105
+    },
+    {
+     "name": "Mk3 Extended Range 75 kWh (2026)",
+     "usable_kwh": 75.1,
+     "wh_per_mi": 268,
+     "ac_kw": 11,
+     "dc_kw": 150
+    }
+   ],
+   "default_variant": 0,
+   "heat_pump": "optional (Mk2), standard Mk3",
+   "verify": [
+    "Mk2 figures from memory — confirm"
+   ],
+   "notes": [
+    "Tens of thousands of Mk2 Leafs on UK roads; CHAdeMO rapid chargers are disappearing, so home charging is increasingly the only cheap option",
+    "No battery cooling on Mk2: repeated rapid charges slow dramatically ('Rapidgate')"
+   ]
+  },
+  {
+   "slug": "hyundai-kona-electric",
+   "make": "Hyundai",
+   "model": "Kona Electric",
+   "rank": {
+    "note": "top-10 UK EV 2019–2021; Mk2 2023+"
+   },
+   "on_sale": "2018–present (Mk2 2023)",
+   "variants": [
+    {
+     "name": "Mk2 48 kWh",
+     "usable_kwh": 48.6,
+     "wh_per_mi": 269,
+     "ac_kw": 11,
+     "dc_kw": 74
+    },
+    {
+     "name": "Mk2 65 kWh",
+     "usable_kwh": 65.4,
+     "wh_per_mi": 273,
+     "ac_kw": 11,
+     "dc_kw": 102
+    },
+    {
+     "name": "Mk1 64 kWh (2018–23)",
+     "usable_kwh": 64,
+     "wh_per_mi": 270,
+     "ac_kw": 7.2,
+     "dc_kw": 77
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "standard on 65 kWh",
+   "verify": [
+    "Mk1 figures from memory"
+   ],
+   "notes": [
+    "Mk1 64 kWh was the long-range value champion of 2019–21 and is everywhere on the used market",
+    "Slow DC charging on all versions — the Kona is a home-charging car"
+   ]
+  },
+  {
+   "slug": "mercedes-cla",
+   "make": "Mercedes-Benz",
+   "model": "CLA (electric)",
+   "rank": {
+    "aug2026": 5
+   },
+   "on_sale": "2025–present",
+   "variants": [
+    {
+     "name": "CLA 200 (58 kWh)",
+     "usable_kwh": 58,
+     "wh_per_mi": 237,
+     "ac_kw": 11,
+     "dc_kw": 200,
+     "battery_type": "LFP"
+    },
+    {
+     "name": "CLA 250+",
+     "usable_kwh": 85,
+     "wh_per_mi": 236,
+     "ac_kw": 11,
+     "dc_kw": 320
+    },
+    {
+     "name": "CLA 350 4MATIC",
+     "usable_kwh": 85,
+     "wh_per_mi": 239,
+     "ac_kw": 11,
+     "dc_kw": 320
+    }
+   ],
+   "default_variant": 1,
+   "heat_pump": "standard",
+   "verify": [],
+   "notes": [
+    "Second most efficient car on sale after the Model 3 (~4.2 mi/kWh) with a big 85 kWh battery",
+    "800-volt: early UK cars could not use older 400 V rapid chargers — check the software/model year"
+   ],
+   "ac_kw_option": 22
+  },
+  {
+   "slug": "vauxhall-frontera-electric",
+   "make": "Vauxhall",
+   "model": "Frontera Electric",
+   "rank": {
+    "aug2026": 3
+   },
+   "on_sale": "2025–present",
+   "variants": [
+    {
+     "name": "44 kWh",
+     "usable_kwh": 43.8,
+     "wh_per_mi": 302,
+     "ac_kw": 7.4,
+     "dc_kw": 100
+    },
+    {
+     "name": "54 kWh Long Range",
+     "usable_kwh": 53.5,
+     "wh_per_mi": 297,
+     "ac_kw": 7.4,
+     "dc_kw": 100
+    }
+   ],
+   "default_variant": 0,
+   "heat_pump": "standard",
+   "verify": [
+    "11 kW AC option",
+    "heat pump"
+   ],
+   "notes": [
+    "Third best-selling EV in August 2026, priced from ~£23k with the Electric Car Grant — a lot of first-time EV buyers",
+    "Not very efficient for a small car (~3.3 mi/kWh); cheap tariff matters"
+   ]
+  }
+ ]
+}

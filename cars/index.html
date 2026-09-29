@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en-GB"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EV charging cost by car: every popular UK electric car compared (2026)</title><meta name="description" content="Charging cost per mile, per charge and per month for the 25 best-selling electric cars in the UK, on every EV tariff. Real-world efficiency data.">
+<link rel="canonical" href="https://evchargecost.co.uk/cars/"><meta property="og:title" content="EV charging cost by car: every popular UK electric car compared (2026)"><meta property="og:description" content="Charging cost per mile, per charge and per month for the 25 best-selling electric cars in the UK, on every EV tariff. Real-world efficiency data."><meta property="og:type" content="article"><meta property="og:url" content="https://evchargecost.co.uk/cars/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>:root{--bg:#F6F7F5;--surface:#FFFFFF;--ink:#16211C;--ink-soft:#4E5C56;--line:#D9DED9;--night:#0E2A3A;--night-ink:#EAF2F6;--night-soft:#9DB5C3;--amber:#F2B84B;--green:#1E9E6A;--red:#C8553D;--focus:#1E9E6A;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1614;--surface:#182220;--ink:#E8EEEA;--ink-soft:#A6B4AD;--line:#2A3632;--night:#08202D}}
+:root[data-theme="dark"]{--bg:#0F1614;--surface:#182220;--ink:#E8EEEA;--ink-soft:#A6B4AD;--line:#2A3632;--night:#08202D}
+*,*::before,*::after{box-sizing:inherit}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.5;font-feature-settings:"tnum" 1}
+a{color:inherit}h1,h2,h3{margin:0;line-height:1.15;letter-spacing:-0.01em}h1{font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:700;max-width:26ch}h2{font-size:1.3rem;font-weight:600;margin-top:36px;margin-bottom:12px}h3{font-size:1.02rem;font-weight:600}p{margin:0 0 12px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+nav.top{display:flex;gap:18px;align-items:center;padding:16px 0;font-size:.92rem;border-bottom:1px solid var(--line)}nav.top a{text-decoration:none;color:var(--ink-soft)}nav.top a.brand{font-weight:700;color:var(--ink)}nav.top a:hover{color:var(--ink)}
+.crumbs{font-size:.82rem;color:var(--ink-soft);margin:18px 0 10px}.crumbs a{text-decoration:none}
+header.hero{padding:6px 0 18px}header.hero p.lead{color:var(--ink-soft);max-width:66ch;margin-top:10px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}.stat b{display:block;font-size:1.35rem;font-weight:600}.stat span{font-size:.8rem;color:var(--ink-soft)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px}
+.night{background:var(--night);color:var(--night-ink);border-radius:14px;padding:22px}.night .k{color:var(--night-soft);font-size:.85rem}.night b.big{font-size:2.2rem;font-weight:700;letter-spacing:-.02em}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:6px 0 16px}@media (max-width:560px){.controls{grid-template-columns:1fr}}
+label{display:block;font-size:.85rem;color:var(--ink-soft);margin-bottom:6px}select,input[type=number]{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;height:44px}
+select:focus,input:focus,a:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+table{width:100%;border-collapse:collapse;font-size:.95rem}th,td{text-align:left;padding:9px 8px;border-top:1px solid var(--line)}th{font-weight:600;font-size:.82rem;color:var(--ink-soft);border-top:0}td.num,th.num{text-align:right;white-space:nowrap}tr.sel td{font-weight:600}tr.cap td{color:var(--red)}
+.scroll{overflow-x:auto}
+.btn{display:inline-block;font:inherit;font-weight:600;padding:11px 16px;border-radius:9px;text-decoration:none;text-align:center;background:var(--ink);color:var(--bg);border:0;cursor:pointer}.btn.amber{background:var(--amber);color:#1B1B1B}.btn.quiet{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.prose{max-width:70ch}.prose p{margin-bottom:12px}.prose ul{padding-left:20px;margin:0 0 12px}
+details{border-top:1px solid var(--line);padding:12px 0}details:last-of-type{border-bottom:1px solid var(--line)}summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}summary::after{content:"+";color:var(--ink-soft);font-weight:400}details[open] summary::after{content:"–"}details p{margin-top:10px;color:var(--ink-soft)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;text-decoration:none;display:block}.card b{display:block;margin-bottom:4px}.card span{font-size:.85rem;color:var(--ink-soft)}
+.links{display:flex;flex-wrap:wrap;gap:10px}.links a{font-size:.9rem;padding:8px 12px;border:1px solid var(--line);border-radius:999px;text-decoration:none;background:var(--surface)}
+.checked{font-size:.82rem;color:var(--ink-soft);margin-top:10px}
+footer{margin:56px 0 40px;font-size:.85rem;color:var(--ink-soft)}footer p{max-width:80ch;margin-bottom:8px}
+</style>
+</head><body><div class="wrap">
+<nav class="top"><a class="brand" href="/">EV Charge Cost</a><a href="/">Calculator</a><a href="/cars/">Cars</a><a href="/tariffs/">Tariffs</a></nav>
+<div class="crumbs"><a href="/">Home</a> › Cars</div><header class="hero"><h1>Charging costs by car</h1><p class="lead">Real-world running costs for the 25 most popular EVs in Britain: cost per charge, per mile and per month on every UK EV tariff, with every battery version covered. Ranked by 2025 sales and how many are on the road.</p></header><div class="cards"><a class="card" href="/cars/audi-q4-e-tron/"><b>Audi Q4 e-tron</b><span>3.4 mi/kWh · full charge £6.84 on 8p / £23 on the cap</span></a><a class="card" href="/cars/audi-q6-e-tron/"><b>Audi Q6 e-tron</b><span>3.1 mi/kWh · full charge £8.44 on 8p / £28 on the cap</span></a><a class="card" href="/cars/bmw-i4/"><b>BMW i4</b><span>4.0 mi/kWh · full charge £7.23 on 8p / £24 on the cap</span></a><a class="card" href="/cars/byd-dolphin/"><b>BYD Dolphin</b><span>3.6 mi/kWh · full charge £5.38 on 8p / £17.69 on the cap</span></a><a class="card" href="/cars/byd-seal/"><b>BYD Seal</b><span>3.6 mi/kWh · full charge £7.33 on 8p / £24 on the cap</span></a><a class="card" href="/cars/byd-sealion-7/"><b>BYD Sealion 7</b><span>3.2 mi/kWh · full charge £7.33 on 8p / £24 on the cap</span></a><a class="card" href="/cars/ford-explorer/"><b>Ford Explorer</b><span>3.5 mi/kWh · full charge £7.02 on 8p / £23 on the cap</span></a><a class="card" href="/cars/hyundai-ioniq-5/"><b>Hyundai IONIQ 5</b><span>3.4 mi/kWh · full charge £7.11 on 8p / £23 on the cap</span></a><a class="card" href="/cars/hyundai-kona-electric/"><b>Hyundai Kona Electric</b><span>3.7 mi/kWh · full charge £5.81 on 8p / £19.13 on the cap</span></a><a class="card" href="/cars/kia-ev3/"><b>Kia EV3</b><span>3.6 mi/kWh · full charge £6.93 on 8p / £23 on the cap</span></a><a class="card" href="/cars/kia-ev6/"><b>Kia EV6</b><span>3.5 mi/kWh · full charge £7.11 on 8p / £23 on the cap</span></a><a class="card" href="/cars/mg4/"><b>MG MG4</b><span>3.6 mi/kWh · full charge £5.48 on 8p / £18.04 on the cap</span></a><a class="card" href="/cars/mercedes-cla/"><b>Mercedes-Benz CLA (electric)</b><span>4.2 mi/kWh · full charge £7.56 on 8p / £25 on the cap</span></a><a class="card" href="/cars/nissan-leaf/"><b>Nissan Leaf</b><span>3.3 mi/kWh · full charge £3.47 on 8p / £11.41 on the cap</span></a><a class="card" href="/cars/peugeot-e-208/"><b>Peugeot e-208</b><span>4.0 mi/kWh · full charge £4.52 on 8p / £14.86 on the cap</span></a><a class="card" href="/cars/polestar-2/"><b>Polestar 2</b><span>3.7 mi/kWh · full charge £7.02 on 8p / £23 on the cap</span></a><a class="card" href="/cars/renault-5/"><b>Renault 5 E-Tech</b><span>4.0 mi/kWh · full charge £4.62 on 8p / £15.21 on the cap</span></a><a class="card" href="/cars/skoda-elroq/"><b>Skoda Elroq</b><span>3.6 mi/kWh · full charge £6.84 on 8p / £23 on the cap</span></a><a class="card" href="/cars/skoda-enyaq/"><b>Skoda Enyaq</b><span>3.7 mi/kWh · full charge £6.84 on 8p / £23 on the cap</span></a><a class="card" href="/cars/tesla-model-3/"><b>Tesla Model 3</b><span>4.6 mi/kWh · full charge £7.02 on 8p / £23 on the cap</span></a><a class="card" href="/cars/tesla-model-y/"><b>Tesla Model Y</b><span>3.8 mi/kWh · full charge £6.58 on 8p / £22 on the cap</span></a><a class="card" href="/cars/vauxhall-corsa-electric/"><b>Vauxhall Corsa Electric</b><span>4.0 mi/kWh · full charge £4.52 on 8p / £14.86 on the cap</span></a><a class="card" href="/cars/vauxhall-frontera-electric/"><b>Vauxhall Frontera Electric</b><span>3.3 mi/kWh · full charge £3.89 on 8p / £12.81 on the cap</span></a><a class="card" href="/cars/volkswagen-id3/"><b>Volkswagen ID.3</b><span>3.8 mi/kWh · full charge £5.16 on 8p / £16.96 on the cap</span></a><a class="card" href="/cars/volvo-ex30/"><b>Volvo EX30</b><span>3.5 mi/kWh · full charge £5.78 on 8p / £19.01 on the cap</span></a></div>
+<section class="prose" style="margin-top:36px"><h2>How to read these pages</h2><p>Each page uses EV Database's real-world efficiency rather than the official WLTP figure, adds 10% for charging losses, and prices the electricity at the tariff you choose. The default is Intelligent Octopus Go at 8p per kWh because it is the most widely used EV tariff; the standard price cap (26.32p) is shown alongside so you can see what switching is worth. Cost per mile is the cleanest way to compare cars with different battery sizes.</p></section>
+<footer><p>Estimates based on real-world efficiency data (EV Database) and tariff prices checked 29 September 2026. Tariff prices, eligibility and windows change – confirm with the supplier before switching. Some links may earn a commission at no cost to you; this never affects the figures.</p><p>© 2026 EV Charge Cost. Made in the UK.</p></footer>
+</div><script>
+const LOSS=0.9, CAP=26.32;
+const gbp=n=>n>=20?"£"+Math.round(n).toLocaleString("en-GB"):"£"+n.toFixed(2);
+const T = window.TARIFFS; const CARS=window.CARS;
+function calc(v,miles,tid){const t=T.find(x=>x.slug===tid);const share=t.flat?1:0.9;const rate=share*t.off+(1-share)*t.peak;
+  const kpm=v.wh_per_mi/1000/LOSS;return {monthly:miles/12*kpm*rate/100, ppm:kpm*rate, full:v.usable_kwh/LOSS*rate/100};}
+function fmtH(h){const hh=Math.floor(h),mm=Math.round((h-hh)*4)*15;return hh+"h"+(mm?(" "+String(mm).padStart(2,"0")+"m"):"");}
+function renderCar(){
+  const page=window.PAGE; if(!page||page.kind!=='car') return;
+  const car=CARS[page.slug]; const vi=+document.getElementById('variant').value; const v=car.variants[vi];
+  const miles=+document.getElementById('miles').value||8000; const tid=document.getElementById('tariff').value;
+  const r=calc(v,miles,tid), cap=calc(v,miles,'standard-price-cap');
+  const set=(id,t)=>{const el=document.getElementById(id); if(el) el.textContent=t;};
+  set('m-monthly',gbp(r.monthly)); set('m-ppm',r.ppm.toFixed(1)+"p"); set('m-full',gbp(r.full));
+  set('m-cap',gbp(cap.monthly)); set('m-save',gbp((cap.monthly-r.monthly)*12));
+  set('m-kwh',v.usable_kwh); set('m-eff',(1000/v.wh_per_mi).toFixed(1)); set('m-home',fmtH(v.usable_kwh/7/LOSS)); set('m-dc',v.dc_kw+" kW"); set('m-ac',v.ac_kw+" kW");
+  const petrol=miles/12/42*4.546*1.38; set('m-petrol',gbp(petrol));
+  // tariff table
+  const rows=T.map(t=>({t,c:calc(v,miles,t.slug)})).sort((a,b)=>a.c.monthly-b.c.monthly);
+  document.getElementById('ttable').innerHTML=rows.map(x=>`<tr class="${x.t.slug===tid?'sel':''} ${x.t.slug==='standard-price-cap'?'cap':''}"><td><a href="/tariffs/${x.t.slug}/">${x.t.name}</a></td><td class="num">${x.t.off}p</td><td class="num">${gbp(x.c.monthly)}</td><td class="num">${x.c.ppm.toFixed(1)}p</td><td class="num">${gbp(x.c.full)}</td></tr>`).join('');
+  renderCompare(v,miles,tid);
+}
+function renderCompare(v,miles,tid){
+  const sel=document.getElementById('cmp'); if(!sel) return; const other=CARS[sel.value]; if(!other){document.getElementById('cmpwrap').hidden=true;return;}
+  const ov=other.variants[other.default_variant]; const a=calc(v,miles,tid), b=calc(ov,miles,tid);
+  const row=(k,x,y)=>`<tr><th>${k}</th><td class="num">${x}</td><td class="num">${y}</td></tr>`;
+  document.getElementById('cmptable').innerHTML=
+   `<tr><th></th><th class="num">${window.PAGE.name}<br><small>${v.name}</small></th><th class="num">${other.make} ${other.model}<br><small>${ov.name}</small></th></tr>`+
+   row('Usable battery',v.usable_kwh+' kWh',ov.usable_kwh+' kWh')+row('Real efficiency',(1000/v.wh_per_mi).toFixed(1)+' mi/kWh',(1000/ov.wh_per_mi).toFixed(1)+' mi/kWh')+
+   row('Cost per mile',a.ppm.toFixed(1)+'p',b.ppm.toFixed(1)+'p')+row('Monthly charging cost',gbp(a.monthly),gbp(b.monthly))+row('Full charge',gbp(a.full),gbp(b.full))+
+   row('Home charge 0–100% (7 kW)',fmtH(v.usable_kwh/7/LOSS),fmtH(ov.usable_kwh/7/LOSS))+row('Peak rapid charging',v.dc_kw+' kW',ov.dc_kw+' kW');
+  document.getElementById('cmpwrap').hidden=false;
+  document.getElementById('cmplink').href='/cars/'+sel.value+'/';
+}
+function renderTariff(){
+  const page=window.PAGE; if(!page||page.kind!=='tariff') return;
+  const miles=+document.getElementById('miles').value||8000; const eff=+document.getElementById('eff').value||3.5;
+  const v={wh_per_mi:1000/eff,usable_kwh:60}; const r=calc(v,miles,page.slug), cap=calc(v,miles,'standard-price-cap');
+  const set=(id,t)=>{const el=document.getElementById(id); if(el) el.textContent=t;};
+  set('m-monthly',gbp(r.monthly)); set('m-ppm',r.ppm.toFixed(1)+"p"); set('m-cap',gbp(cap.monthly)); set('m-save',gbp((cap.monthly-r.monthly)*12));
+  const tbody=document.getElementById('ctable'); if(tbody){tbody.innerHTML=page.popular.map(s=>{const c=CARS[s],cv=c.variants[c.default_variant];const x=calc(cv,miles,page.slug),y=calc(cv,miles,'standard-price-cap');
+    return `<tr><td><a href="/cars/${s}/">${c.make} ${c.model}</a> <small>${cv.name}</small></td><td class="num">${(1000/cv.wh_per_mi).toFixed(1)}</td><td class="num">${gbp(x.monthly)}</td><td class="num">${gbp(y.monthly)}</td><td class="num">${gbp((y.monthly-x.monthly)*12)}</td></tr>`;}).join('');}
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  ['variant','miles','tariff','cmp','eff'].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener('input',()=>{renderCar();renderTariff();});});
+  const q=new URLSearchParams(location.search).get('compare'); const cmp=document.getElementById('cmp'); if(q&&cmp&&CARS[q]) cmp.value=q;
+  renderCar(); renderTariff();
+});
+</script></body></html>
