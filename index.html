@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EV Charging Cost Calculator UK – Monthly Cost, Cost per Mile & Tariff Comparison</title>
+<meta name="description" content="Work out what it costs to charge your electric car in the UK. Compare Intelligent Octopus Go, EDF GoElectric, E.ON Next Drive and the price cap, see cost per mile, and how much you save versus petrol.">
+<link rel="canonical" href="https://YOUR-DOMAIN.co.uk/">
+<meta property="og:title" content="EV Charging Cost Calculator UK">
+<meta property="og:description" content="Monthly EV charging cost, cost per mile and tariff comparison for UK drivers.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"How much does it cost to charge an electric car at home in the UK?","acceptedAnswer":{"@type":"Answer","text":"On the standard price cap (about 26p per kWh) a typical 60 kWh battery costs roughly £16 to fill from empty. On a dedicated EV tariff with an off-peak rate of 7–9p per kWh the same charge costs £4–6."}},
+{"@type":"Question","name":"What is the cheapest EV tariff in the UK?","acceptedAnswer":{"@type":"Answer","text":"As of September 2026 the lowest off-peak rates are around 6.9–8p per kWh from EDF GoElectric, Utility Warehouse, Intelligent Octopus Go and E.ON Next Drive. The best tariff for you depends on your daytime usage, standing charge and whether your car or charger is compatible."}},
+{"@type":"Question","name":"Is charging an EV cheaper than petrol?","acceptedAnswer":{"@type":"Answer","text":"Charging at home on an EV tariff costs around 2–3p per mile, against roughly 14–16p per mile for a 42 mpg petrol car at £1.38 per litre. Public rapid charging at 75–85p per kWh is closer to petrol cost per mile."}}
+]}
+</script>
+<style>
+:root{
+  --bg:#F6F7F5; --surface:#FFFFFF; --ink:#16211C; --ink-soft:#4E5C56; --line:#D9DED9;
+  --night:#0E2A3A; --night-ink:#EAF2F6; --night-soft:#9DB5C3;
+  --amber:#F2B84B; --green:#1E9E6A; --red:#C8553D;
+  --focus:#1E9E6A;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1614; --surface:#182220; --ink:#E8EEEA; --ink-soft:#A6B4AD; --line:#2A3632;
+    --night:#08202D; --night-ink:#EAF2F6; --night-soft:#9DB5C3;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1614; --surface:#182220; --ink:#E8EEEA; --ink-soft:#A6B4AD; --line:#2A3632;
+  --night:#08202D;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.5;font-feature-settings:"tnum" 1}
+a{color:inherit}
+h1,h2,h3{margin:0;line-height:1.15;letter-spacing:-0.01em}
+h1{font-size:clamp(1.7rem,3.4vw,2.5rem);font-weight:700;max-width:22ch}
+h2{font-size:1.35rem;font-weight:600}
+h3{font-size:1.05rem;font-weight:600}
+p{margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+header.top{padding:40px 0 24px}
+header.top p{color:var(--ink-soft);max-width:60ch;margin-top:12px}
+
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:820px){.layout{grid-template-columns:1fr}}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px}
+fieldset{border:0;padding:0;margin:0 0 22px}
+legend{font-weight:600;font-size:1.05rem;margin-bottom:12px;padding:0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:480px){.row{grid-template-columns:1fr}}
+label{display:block;font-size:.9rem;color:var(--ink-soft);margin-bottom:6px}
+input[type=number],select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;height:44px}
+input[type=number]:focus,select:focus,input[type=range]:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.unit{position:relative}
+.unit span{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--ink-soft);font-size:.85rem;pointer-events:none}
+.unit input{padding-right:52px}
+.slider{margin-top:6px}
+.slider .val{display:flex;justify-content:space-between;font-size:.9rem;color:var(--ink-soft);margin-bottom:4px}
+.slider output{color:var(--ink);font-weight:600}
+input[type=range]{width:100%;accent-color:var(--green);margin:0}
+.hint{font-size:.82rem;color:var(--ink-soft);margin-top:6px}
+
+/* Result panel — the "night" card */
+.result{background:var(--night);color:var(--night-ink);border-radius:14px;padding:26px 24px;position:sticky;top:calc(16px + env(safe-area-inset-top,0px))}
+.result .big{font-size:clamp(2.6rem,6vw,3.6rem);font-weight:700;line-height:1;letter-spacing:-0.03em}
+.result .big small{font-size:1.1rem;font-weight:500;color:var(--night-soft);letter-spacing:0;margin-left:6px}
+.result .lead{color:var(--night-soft);margin-bottom:10px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.14)}
+.stats div b{display:block;font-size:1.25rem;font-weight:600}
+.stats div span{font-size:.82rem;color:var(--night-soft)}
+.vs{margin-top:20px;padding:14px 16px;background:rgba(255,255,255,.07);border-radius:10px;display:flex;gap:14px;align-items:baseline;justify-content:space-between;flex-wrap:wrap}
+.vs b{font-size:1.15rem}
+.vs .pos{color:var(--amber)}
+.vs .neg{color:#F0A08D}
+
+/* Tariff comparison */
+.compare{margin-top:36px}
+.compare .panel{padding:0;overflow:hidden}
+.compare header{padding:22px 24px 8px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline}
+.compare header p{font-size:.85rem;color:var(--ink-soft)}
+.bars{list-style:none;margin:0;padding:8px 24px 20px}
+.bars li{display:grid;grid-template-columns:minmax(120px,190px) 1fr auto;gap:12px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.bars li:first-child{border-top:0}
+.bars .name{font-size:.93rem}
+.bars .name small{display:block;color:var(--ink-soft);font-size:.78rem}
+.bar{height:14px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--night);border-radius:3px;transition:width .35s ease}
+.bars li.sel .bar i{background:var(--green)}
+.bars li.cap .bar i{background:var(--red)}
+.bars .cost{text-align:right;min-width:96px;font-weight:600}
+.bars .cost small{display:block;font-weight:400;font-size:.78rem;color:var(--ink-soft)}
+.bars .cost small.save{color:var(--green)}
+@media (max-width:480px){.bars li{grid-template-columns:1fr auto}.bars .bar{grid-column:1 / -1;order:3}}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+
+/* Offers / affiliate slots */
+.offers{margin-top:36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.offer{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.offer p{color:var(--ink-soft);font-size:.92rem;flex:1}
+.btn{display:inline-block;font:inherit;font-weight:600;padding:11px 16px;border-radius:9px;text-decoration:none;text-align:center;background:var(--ink);color:var(--bg);border:0;cursor:pointer}
+.btn.quiet{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.ad{margin-top:36px;min-height:90px;border:1px dashed var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-size:.85rem}
+
+/* Guide text */
+.guide{margin-top:48px;max-width:70ch}
+.guide h2{margin-top:32px;margin-bottom:10px}
+.guide p{margin-bottom:12px;color:var(--ink);}
+.guide p,.guide li{max-width:70ch}
+details{border-top:1px solid var(--line);padding:14px 0}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::after{content:"+";color:var(--ink-soft);font-weight:400}
+details[open] summary::after{content:"–"}
+details p{margin-top:10px;color:var(--ink-soft)}
+footer{margin:56px 0 40px;font-size:.85rem;color:var(--ink-soft)}
+footer p{max-width:80ch;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <h1>How much does it cost to charge your electric car?</h1>
+  <p>Enter your mileage and how you charge. See your monthly cost, cost per mile, and which UK EV tariff would save you the most. Rates are September 2026 figures – always check the supplier before switching.</p>
+</header>
+
+<div class="layout">
+  <section class="panel" aria-labelledby="inputs-h">
+    <h2 id="inputs-h" style="margin-bottom:18px">Your driving and charging</h2>
+
+    <fieldset>
+      <legend>Car and mileage</legend>
+      <div class="row">
+        <div>
+          <label for="miles">Miles per year</label>
+          <div class="unit"><input id="miles" type="number" min="500" max="60000" step="500" value="8000"><span>miles</span></div>
+        </div>
+        <div>
+          <label for="eff">Efficiency</label>
+          <div class="unit"><input id="eff" type="number" min="1.5" max="6" step="0.1" value="3.5"><span>mi / kWh</span></div>
+          <p class="hint">Most EVs manage 3–4 mi/kWh. Check your car's trip display.</p>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Where you charge</legend>
+      <div class="slider">
+        <div class="val"><label for="home" style="margin:0">Charged at home</label><output id="homeOut" for="home">80%</output></div>
+        <input id="home" type="range" min="0" max="100" step="5" value="80">
+        <p class="hint">The rest is public charging.</p>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <div>
+          <label for="pubRate">Public charging price</label>
+          <div class="unit"><input id="pubRate" type="number" min="20" max="120" step="1" value="79"><span>p / kWh</span></div>
+          <p class="hint">Rapid chargers are typically 75–85p. Slower destination chargers 45–60p.</p>
+        </div>
+        <div>
+          <label for="loss">Charging losses</label>
+          <div class="unit"><input id="loss" type="number" min="0" max="25" step="1" value="10"><span>%</span></div>
+          <p class="hint">Energy lost as heat between socket and battery. 8–12% is normal.</p>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Home tariff</legend>
+      <label for="tariff">Your tariff (or the one you're considering)</label>
+      <select id="tariff"></select>
+      <div class="row" style="margin-top:14px">
+        <div>
+          <label for="offRate">Off-peak rate</label>
+          <div class="unit"><input id="offRate" type="number" min="1" max="60" step="0.01"><span>p / kWh</span></div>
+        </div>
+        <div>
+          <label for="peakRate">Peak rate</label>
+          <div class="unit"><input id="peakRate" type="number" min="1" max="80" step="0.01"><span>p / kWh</span></div>
+        </div>
+      </div>
+      <div class="slider" style="margin-top:14px">
+        <div class="val"><label for="offShare" style="margin:0">Home charging done in the off-peak window</label><output id="offShareOut" for="offShare">90%</output></div>
+        <input id="offShare" type="range" min="0" max="100" step="5" value="90">
+        <p class="hint">With a scheduled charger, 85–95% is realistic.</p>
+      </div>
+    </fieldset>
+
+    <fieldset style="margin-bottom:0">
+      <legend>Compare with petrol</legend>
+      <div class="row">
+        <div>
+          <label for="mpg">Petrol car economy</label>
+          <div class="unit"><input id="mpg" type="number" min="15" max="90" step="1" value="42"><span>mpg</span></div>
+        </div>
+        <div>
+          <label for="petrol">Petrol price</label>
+          <div class="unit"><input id="petrol" type="number" min="0.8" max="2.5" step="0.01" value="1.38"><span>£ / litre</span></div>
+        </div>
+      </div>
+    </fieldset>
+  </section>
+
+  <aside class="result" aria-live="polite" aria-labelledby="result-h">
+    <p class="lead" id="result-h">Your estimated charging cost</p>
+    <div class="big"><span id="monthly">£0</span><small>per month</small></div>
+    <div class="stats">
+      <div><b id="perMile">0p</b><span>per mile</span></div>
+      <div><b id="annual">£0</b><span>per year</span></div>
+      <div><b id="kwh">0</b><span>kWh a month</span></div>
+    </div>
+    <div class="vs">
+      <span>Same miles in a petrol car</span>
+      <b id="petrolCost">£0 / month</b>
+      <span id="saving" class="pos" style="width:100%"></span>
+    </div>
+    <p class="lead" style="margin-top:16px;font-size:.85rem" id="breakdown"></p>
+  </aside>
+</div>
+
+<section class="compare" aria-labelledby="compare-h">
+  <div class="panel">
+    <header>
+      <h2 id="compare-h">What you'd pay on each tariff</h2>
+      <p>Monthly cost with your inputs above. Standing charges and your household's daytime usage aren't included, so treat this as the charging-only difference.</p>
+    </header>
+    <ul class="bars" id="bars"></ul>
+  </div>
+</section>
+
+<!-- Affiliate slots: swap href values for your tracked links once approved. -->
+<section class="offers" aria-label="Next steps">
+  <div class="offer">
+    <h3>Switch to an EV tariff</h3>
+    <p>Most drivers save £300–500 a year moving from the price cap to an overnight EV tariff. You'll need a smart meter.</p>
+    <a class="btn" id="offer-tariff" href="https://octopus.energy/smart/intelligent-octopus-go/" rel="nofollow sponsored noopener" target="_blank">Compare EV tariffs</a>
+  </div>
+  <div class="offer">
+    <h3>Get a home charger installed</h3>
+    <p>A 7 kW smart charger lets you schedule charging into the cheap window automatically. Typical installed price is £800–1,100.</p>
+    <a class="btn quiet" id="offer-charger" href="https://pod-point.com/" rel="nofollow sponsored noopener" target="_blank">Get charger quotes</a>
+  </div>
+  <div class="offer">
+    <h3>Cut public charging costs</h3>
+    <p>If more than a third of your charging is public, a network subscription or credit card with charging rewards often pays for itself.</p>
+    <a class="btn quiet" id="offer-public" href="https://www.zap-map.com/" rel="nofollow sponsored noopener" target="_blank">Find cheaper chargers</a>
+  </div>
+</section>
+
+<div class="ad" id="ad-slot-1">Advert space – add your AdSense code here once approved</div>
+
+<section class="guide">
+  <h2>How the calculation works</h2>
+  <p>Your annual miles divided by your car's efficiency gives the energy that reaches the battery. We add charging losses to get what you actually pay for at the socket. That energy is split between home and public charging using your slider, and the home part is split again between the off-peak and peak rates of your tariff. Everything is then divided by twelve.</p>
+  <p>Cost per mile is the simplest way to compare options: an EV on a 7p tariff costs about 2p a mile, a public rapid charger about 25p a mile, and a 42 mpg petrol car about 15p a mile at £1.38 a litre.</p>
+
+  <h2>Common questions</h2>
+  <details>
+    <summary>How much does it cost to fully charge an EV at home?</summary>
+    <p>A 60 kWh battery charged from empty needs about 66 kWh from the socket after losses. On the price cap (26.32p from 1 October 2026) that's around £17. On an 8p EV tariff it's about £5.</p>
+  </details>
+  <details>
+    <summary>Which EV tariff is cheapest?</summary>
+    <p>The lowest headline off-peak rates in September 2026 are EDF GoElectric (6.99p), Utility Warehouse (6.9p, with conditions), Intelligent Octopus Go (8p) and E.ON Next Drive Smart (8.5p). The right one depends on the length of the cheap window, the peak rate you'll pay for the rest of the house, and whether your car or charger is compatible. Use the comparison above with your own numbers.</p>
+  </details>
+  <details>
+    <summary>Do I need a smart meter?</summary>
+    <p>Yes. Every time-of-use EV tariff needs a working smart meter so the supplier can bill the cheap hours separately. Most suppliers will fit one free when you switch.</p>
+  </details>
+  <details>
+    <summary>Is public charging worth it?</summary>
+    <p>For occasional long trips, yes. As a main way of charging it is roughly the same cost per mile as petrol. If you can't charge at home, look at workplace charging, lamp-post chargers (often 40–55p) and network subscriptions that lower the per-kWh price.</p>
+  </details>
+  <details>
+    <summary>Where do the numbers come from?</summary>
+    <p>Tariff rates are taken from supplier websites and independent comparisons in September 2026 and rounded. Peak rates vary by region, so enter your own from your bill for an exact figure. Nothing here is financial advice.</p>
+  </details>
+</section>
+
+<footer>
+  <p>Estimates only. Tariff prices, eligibility and windows change – confirm with the supplier before switching. Some links on this page may earn a commission at no cost to you; this never affects the calculation.</p>
+  <p>© <span id="year"></span> EV Charge Cost. Made in the UK.</p>
+</footer>
+
+</div>
+
+<script>
+// ---- Tariff data (edit here when prices change; rates in p/kWh) ----
+const TARIFFS = [
+  {id:"cap",   name:"Standard price cap",      off:26.32, peak:26.32, win:"No off-peak", flat:true},
+  {id:"iog",   name:"Intelligent Octopus Go",  off:8.00,  peak:27.00, win:"23:30–05:30 + smart slots"},
+  {id:"go",    name:"Octopus Go",              off:8.50,  peak:27.00, win:"00:30–05:30"},
+  {id:"edf",   name:"EDF GoElectric",          off:6.99,  peak:30.00, win:"23:00–06:00"},
+  {id:"eon",   name:"E.ON Next Drive Smart",   off:8.50,  peak:30.87, win:"00:00–06:00"},
+  {id:"bg",    name:"British Gas EV Power",    off:9.00,  peak:27.50, win:"00:00–05:00"},
+  {id:"uw",    name:"Utility Warehouse EV",    off:6.90,  peak:27.16, win:"00:00–05:00 GMT, bundle required"},
+  {id:"ovo",   name:"OVO Charge Anytime",      off:14.00, peak:14.00, win:"Any time, EV charging only", flat:true},
+  {id:"custom",name:"My own rates",            off:8.00,  peak:27.00, win:"Enter your rates"},
+];
+
+const $ = id => document.getElementById(id);
+const gbp = n => "£" + n.toLocaleString("en-GB",{minimumFractionDigits:0,maximumFractionDigits:0});
+const gbp2 = n => "£" + n.toLocaleString("en-GB",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+// Populate tariff select
+TARIFFS.forEach(t=>{
+  const o=document.createElement("option"); o.value=t.id; o.textContent=t.name; $("tariff").appendChild(o);
+});
+$("tariff").value="iog";
+
+function loadTariff(){
+  const t=TARIFFS.find(x=>x.id===$("tariff").value);
+  $("offRate").value=t.off; $("peakRate").value=t.peak;
+  if(t.flat){$("offShare").value=100;}
+  $("offShareOut").textContent=$("offShare").value+"%";
+}
+
+function num(id,fallback){const v=parseFloat($(id).value);return isFinite(v)?v:fallback;}
+
+function costFor(offRate,peakRate,inputs,forceFlat){
+  const {homeKwh,pubKwh,pubRate,offShare}=inputs;
+  const share=forceFlat?1:offShare;
+  const homeCost=homeKwh*(share*offRate+(1-share)*peakRate)/100;
+  const pubCost=pubKwh*pubRate/100;
+  return {homeCost,pubCost,total:homeCost+pubCost};
+}
+
+function calc(){
+  const miles=num("miles",8000), eff=Math.max(num("eff",3.5),0.5);
+  const homePct=num("home",80)/100, pubRate=num("pubRate",79), loss=Math.min(num("loss",10),60)/100;
+  const offRate=num("offRate",8), peakRate=num("peakRate",27), offShare=num("offShare",90)/100;
+  const mpg=Math.max(num("mpg",42),5), petrol=num("petrol",1.38);
+
+  $("homeOut").textContent=Math.round(homePct*100)+"%";
+  $("offShareOut").textContent=Math.round(offShare*100)+"%";
+
+  const totalKwh=miles/eff/(1-loss);
+  const inputs={homeKwh:totalKwh*homePct,pubKwh:totalKwh*(1-homePct),pubRate,offShare};
+  const mine=costFor(offRate,peakRate,inputs,false);
+
+  const monthly=mine.total/12;
+  const perMile=mine.total/miles*100;
+  const petrolAnnual=miles/mpg*4.546*petrol;
+
+  $("monthly").textContent=gbp(monthly);
+  $("annual").textContent=gbp(mine.total);
+  $("perMile").textContent=perMile.toFixed(1)+"p";
+  $("kwh").textContent=Math.round(totalKwh/12);
+  $("petrolCost").textContent=gbp(petrolAnnual/12)+" / month";
+  const diff=petrolAnnual-mine.total;
+  const s=$("saving");
+  if(diff>=0){s.className="pos";s.textContent="You save about "+gbp(diff)+" a year versus petrol.";}
+  else{s.className="neg";s.textContent="This costs about "+gbp(-diff)+" a year more than petrol – mostly public charging.";}
+  $("breakdown").textContent="Home charging "+gbp2(mine.homeCost/12)+" · public charging "+gbp2(mine.pubCost/12)+" per month.";
+
+  // Comparison bars
+  const sel=$("tariff").value;
+  const rows=TARIFFS.filter(t=>t.id!=="custom" || sel==="custom").map(t=>{
+    const useOff = t.id===sel?offRate:t.off, usePeak = t.id===sel?peakRate:t.peak;
+    return {t, cost:costFor(useOff,usePeak,inputs,!!t.flat).total/12};
+  }).sort((a,b)=>a.cost-b.cost);
+  const cap=rows.find(r=>r.t.id==="cap").cost, max=Math.max(...rows.map(r=>r.cost),1);
+  $("bars").innerHTML=rows.map(r=>{
+    const save=cap-r.cost;
+    const cls=(r.t.id===sel?"sel ":"")+(r.t.id==="cap"?"cap":"");
+    const note=r.t.id==="cap"?"<small>reference</small>":(save>0?"<small class='save'>saves "+gbp(save*12)+"/yr</small>":"<small>"+gbp(-save*12)+"/yr more</small>");
+    return `<li class="${cls}"><div class="name">${r.t.name}${r.t.id===sel?" (selected)":""}<small>${r.t.win} · ${r.t.off}p off-peak</small></div><div class="bar"><i style="width:${(r.cost/max*100).toFixed(1)}%"></i></div><div class="cost">${gbp(r.cost)}/mo${note}</div></li>`;
+  }).join("");
+}
+
+$("tariff").addEventListener("change",()=>{loadTariff();calc();});
+["miles","eff","home","pubRate","loss","offRate","peakRate","offShare","mpg","petrol"].forEach(id=>$(id).addEventListener("input",calc));
+$("year").textContent=new Date().getFullYear();
+loadTariff(); calc();
+</script>
+</body>
+</html>
