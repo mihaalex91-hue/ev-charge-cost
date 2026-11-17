@@ -5,38 +5,110 @@ Re-run any time the data changes; pages are fully regenerated."""
 import json, os, html, math, datetime
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://evchargecost.co.uk"
-TODAY = "29 September 2026"; ISO = "2026-09-29"
+TODAY = "17 November 2026"; ISO = "2026-11-17"   # tariff check date
+CAR_DATA_CHECKED = "29 September 2026"             # cars.json (battery/efficiency) last checked
 LOSS = 0.9          # charging losses socket->battery
 MILES = 8000        # reference annual mileage
 PETROL_MPG, PETROL_PPL = 42, 1.38
 PUBLIC_RAPID = 79   # p/kWh
-CAP = 26.32
+CAP = 26.32         # Ofgem cap Oct-Dec 2026, average elec unit rate (MSE, Octopus)
 
+# All tariff figures checked 17 November 2026.
+# "peak" = average day rate across regions (MoneySavingExpert EV tariff table, 17 Nov 2026) unless noted.
+# Sources: moneysavingexpert.com/utilities/ev-energy-tariffs/ plus each supplier's own page (url below).
+# Optional per-tariff keys used for hand-written content: desc, stats, facts, facts_note, faq, peak_title,
+# pick_note / alt_note (car-page tariff advice).
+GUIDE_BG = "/guides/british-gas-electric-driver-tariff/"
 TARIFFS = [
  dict(slug="standard-price-cap", name="Standard price cap", supplier="Ofgem cap (any supplier)", off=26.32, peak=26.32, flat=True, hours=0, window="No off-peak window",
       url="https://www.ofgem.gov.uk/energy-price-cap", smart=False, exit_fee="None", eligibility="Everyone — it's the default tariff",
       blurb="The cap is what you pay if you've never switched. It is the wrong tariff for an EV: every kWh into the car costs the full daytime rate."),
- dict(slug="intelligent-octopus-go", name="Intelligent Octopus Go", supplier="Octopus Energy", off=8.00, peak=27.00, hours=6, window="23:30–05:30, plus extra smart slots Octopus schedules for you",
-      url="https://octopus.energy/smart/intelligent-octopus-go/", smart=True, exit_fee="None", eligibility="Smart meter + a compatible car or charger (most major EV brands, Ohme, Zappi, Wallbox and others)",
-      blurb="The most popular EV tariff in Britain. You tell the app when you need the car ready and how full; Octopus picks the charging slots, and any slot it schedules outside the window is billed at the cheap rate too — often 7–8 hours of cheap charging a night in practice."),
- dict(slug="octopus-go", name="Octopus Go", supplier="Octopus Energy", off=8.50, peak=27.00, hours=5, window="00:30–05:30",
-      url="https://octopus.energy/smart/go/", smart=False, exit_fee="None", eligibility="Smart meter; works with any car and any charger",
-      blurb="The simple version of Octopus's EV tariff: a fixed five-hour window, no app scheduling, no compatibility list. Half a penny dearer than Intelligent Go and one hour shorter."),
- dict(slug="edf-goelectric", name="EDF GoElectric", supplier="EDF", off=6.99, peak=30.00, hours=7, window="23:00–06:00",
-      url="https://www.edfenergy.com/electric-cars/ev-tariffs", smart=False, exit_fee="Yes — a fixed-term tariff, typically two years", eligibility="Smart meter; any car and charger",
-      blurb="The lowest headline off-peak rate on the market and the longest fixed window, at the cost of a high peak rate for the rest of the house. Works well for high-mileage drivers who charge every night and keep daytime usage low."),
- dict(slug="eon-next-drive", name="E.ON Next Drive Smart", supplier="E.ON Next", off=8.50, peak=30.87, hours=6, window="00:00–06:00",
-      url="https://www.eonnext.com/electric-vehicles", smart=True, exit_fee="None", eligibility="Smart meter; smart charging through the E.ON Next app with a compatible charger",
-      blurb="Six hours at 8.5p with app-based scheduling. The peak rate is one of the higher ones, so it suits households that can push most electricity use into the window."),
- dict(slug="british-gas-ev-power", name="British Gas EV Power", supplier="British Gas", off=9.00, peak=27.50, hours=5, window="00:00–05:00",
-      url="https://www.britishgas.co.uk/energy/electric-vehicles.html", smart=False, exit_fee="None", eligibility="Smart meter; any car and charger",
-      blurb="British Gas's answer to Octopus Go: a five-hour window at 9p. Slightly dearer than the Octopus tariffs but convenient if you're already a British Gas customer."),
- dict(slug="utility-warehouse-ev", name="Utility Warehouse EV", supplier="Utility Warehouse", off=6.90, peak=27.16, hours=5, window="00:00–05:00 GMT (01:00–06:00 in summer time)",
-      url="https://uw.co.uk/", smart=False, exit_fee="None on energy; bundle services have their own terms", eligibility="Smart meter and at least two other UW services (broadband, mobile or boiler cover)",
-      blurb="The cheapest off-peak rate of all, but only if you bundle. If you already want UW broadband or mobile it's a bargain; if not, the bundle usually eats the saving."),
- dict(slug="ovo-charge-anytime", name="OVO Charge Anytime", supplier="OVO", off=14.00, peak=14.00, flat=True, hours=24, window="Any time of day — the cheap rate applies to the car's charging only",
-      url="https://www.ovoenergy.com/electric-cars/charge-anytime", smart=True, exit_fee="None", eligibility="OVO customer, smart meter, compatible car or charger so OVO can measure what the car used",
-      blurb="Different from the rest: the house stays on OVO's normal rate and every kWh that goes into the car is credited back down to 14p, whenever you charge. Unbeatable if you can't charge overnight; dearer than a 7–9p window if you can."),
+ # Octopus: page advertises "from only 6.5p" (Intelligent Octopus Go Max, variable). MSE lists the standard
+ # version at 9.9p / 33.9p, no exit fee; we model that one (its day rate is the one MSE publishes).
+ dict(slug="intelligent-octopus-go", name="Intelligent Octopus Go", supplier="Octopus Energy", off=9.90, peak=33.90, hours=6, window="23:30–05:30, plus smart-charging slots Octopus schedules for you (up to six hours a day)",
+      url="https://octopus.energy/smart/intelligent-octopus-go/", smart=True, exit_fee="None on the standard version (MoneySavingExpert). Octopus also sells a 12-month fixed version, so check the exit terms on your quote",
+      eligibility="Smart meter and a compatible car or charger (Octopus checks your car or charger when you sign up)",
+      blurb="The UK's most popular EV tariff. Octopus schedules your charging through its app, and up to six hours of smart charging a day is billed at the cheap rate, even when a slot falls outside the 23:30–05:30 window. MoneySavingExpert lists the standard version at 9.9p overnight with a 33.9p average day rate. Octopus advertises smart charging from 6.5p on its Intelligent Octopus Go Max version, which it says suits high-mileage drivers and households that shift a lot of use overnight.",
+      facts=[("Off-peak rate","9.9p per kWh on the standard version (MoneySavingExpert); from 6.5p on Intelligent Octopus Go Max (Octopus)"),
+             ("Cheap hours","23:30–05:30 for the whole home, plus up to six hours a day of smart charging at the cheap rate"),
+             ("Day rate","about 33.9p per kWh on average for the standard version; varies by region, and Max has a higher day rate"),
+             ("Eligibility","a smart meter and a compatible car or charger; Octopus checks yours when you sign up"),
+             ("Exit fee","none on the standard version (MoneySavingExpert); Octopus also sells a 12-month fixed version, so check the exit terms on your quote")],
+      pick_note="It needs a compatible car or charger."),
+ # Octopus Go: 9.4p 00:30-05:30 (MSE; Octopus public price data GO-VAR-22-10-14: 9.4p night, day 33.03-35.75p, avg 34.2p).
+ # 12M fixed GO-FIX-12M-26-10-30: 9.4p night, day avg 37.9p, £50 exit fee.
+ dict(slug="octopus-go", name="Octopus Go", supplier="Octopus Energy", off=9.40, peak=34.20, hours=5, window="00:30–05:30",
+      url="https://octopus.energy/smart/go/", smart=False, exit_fee="None on the variable version; the 12-month fixed version has a £50 exit fee", eligibility="Octopus customer with a smart meter Octopus can read; works with any car and any charger",
+      blurb="The simple version of Octopus's EV tariff: a fixed five-hour window from 00:30 to 05:30, no app scheduling and no compatibility list. The variable version is 9.4p overnight with a 34.2p average day rate; a 12-month fix has the same night rate, a higher day rate and a £50 exit fee.",
+      facts=[("Off-peak rate","9.4p per kWh, 00:30–05:30 every night"),
+             ("Day rate","about 34.2p per kWh on average on the variable version (roughly 33.0–35.8p by region); about 37.9p on the 12-month fix (Octopus price data)"),
+             ("Eligibility","an Octopus account, a smart meter Octopus can read and an EV you charge at home; any car and any charger"),
+             ("Exit fee","none on the variable version; £50 on the 12-month fix")]),
+ # EDF: 6.66p 23:00-06:00, £75 exit fee, any EV/charger (edfenergy.com GoElectric page); peak 32.99p (MSE, GoElectric 18m v3).
+ dict(slug="edf-goelectric", name="EDF GoElectric", supplier="EDF", off=6.66, peak=32.99, hours=7, window="23:00–06:00",
+      url="https://www.edfenergy.com/electric-cars/ev-tariffs/goelectric", smart=False, exit_fee="£75", eligibility="An EV you charge at home and a fully connected smart meter; works with any car and any charger. Electricity only",
+      blurb="Seven hours at 6.66p every night from 11pm to 6am, the longest fixed window of the mainstream EV tariffs, and it works with any car and charger. It also has the lowest average day rate in MoneySavingExpert's November table (32.99p). It's a fixed deal with a £75 exit fee, and opting into EDF's Smart Charging bolt-on with a compatible car or charger adds £5 a month bill credit.",
+      facts=[("Off-peak rate","6.66p per kWh, 23:00–06:00 every night, for the whole home"),
+             ("Day rate","about 32.99p per kWh on average (MoneySavingExpert); varies by region"),
+             ("Smart Charging bolt-on","optional; with a compatible car or charger EDF schedules your charging and adds £5 a month bill credit"),
+             ("Eligibility","an EV you charge at home and a fully connected smart meter; any car and any charger. Electricity only"),
+             ("Exit fee","£75")],
+      pick_note="It works with any car and charger and has the longest window, but has a £75 exit fee.",
+      alt_note="works with any car and charger and has a seven-hour window, but has a £75 exit fee"),
+ # E.ON: 6.5p 00:00-06:00 + app-scheduled slots, fixed 12 months, no exit fee, boost 34.322p (eonnext.com, info correct 16 Nov 2026); MSE avg peak 34.32p.
+ dict(slug="eon-next-drive", name="E.ON Next Drive Smart", supplier="E.ON Next", off=6.50, peak=34.32, hours=6, window="00:00–06:00, plus smart-charging slots scheduled in the E.ON Next Home app",
+      url="https://www.eonnext.com/tariffs/next-drive/smart", smart=True, exit_fee="None", eligibility="A smart meter sending half-hourly readings and a supported car or charger connected to the E.ON Next Home app; one EV per home",
+      blurb="Six hours at 6.5p from midnight to 6am, fixed for 12 months, with no exit fee. Any charging the E.ON Next Home app schedules outside the window is billed at 6.5p too, and the whole house gets the cheap rate during those slots. You need a supported car or charger; boost charging at peak times is billed at the day rate, about 34.32p.",
+      facts=[("Off-peak rate","6.5p per kWh, 00:00–06:00 every night for the whole home, plus any charging slots the app schedules in the day"),
+             ("Day rate","about 34.32p per kWh (MoneySavingExpert average; E.ON quotes 34.322p for boost charging)"),
+             ("Contract","rates fixed for 12 months"),
+             ("Eligibility","a smart meter sending half-hourly readings and a supported car, or a supported charger (zappi, Hypervolt, Indra, Simpson & Partners or Sync Energy); one EV per home"),
+             ("Bonus","up to £75 bill credit if you connect your car or charger to the app within 16 days of switching"),
+             ("Exit fee","none")],
+      pick_note="It needs a supported car or charger connected to the E.ON Next Home app.",
+      alt_note="has no exit fee but needs a supported car or charger"),
+ # British Gas checked 17 Nov 2026 (formerly "Electric Driver"). peak = MSE average day rate; regional 36.79–41.08p.
+ # Standing charge 42.20–66.64p/day (Selectra). Exit fee £100/fuel (MSE, Selectra; some sources say £200).
+ dict(slug="british-gas-ev-power", name="British Gas EV Power", supplier="British Gas", off=9.50, peak=38.49, hours=5, window="00:00–05:00",
+      url="https://www.britishgas.co.uk/energy/ev-tariff.html", smart=False, exit_fee="£100 per fuel on the current fix (none in the last 49 days)", eligibility="An EV you charge at home, a smart electricity meter and Direct Debit; any car and charger",
+      blurb="British Gas's EV tariff, sold as Electric Driver until it was renamed EV Power: 9.5p per kWh from midnight to 5am every day, for the whole house. Dearer overnight than the cheapest EV tariffs and with a day rate well above the price cap, so it suits drivers who can push most of their use into the window.",
+      desc="British Gas EV Power (formerly Electric Driver): 9.5p/kWh off-peak, 00:00–05:00 every day. Day rate about 38.5p on average, £100 exit fee per fuel. What an EV driver pays per month and how it compares.",
+      stats=[("9.5p","per kWh off-peak, 00:00–05:00"),("~38.5p","average day rate (varies by region)"),("5 hours","cheap window"),("No","smart charging needed"),("£100","exit fee per fuel on the current fix")],
+      peak_title="Average day rate; varies by region (about 36.8–41.1p). Checked 17 November 2026.",
+      facts=[("Name","EV Power, formerly sold as Electric Driver. Some comparison sites still use the old name."),
+             ("Off-peak rate","9.5p per kWh"),
+             ("Cheap window","00:00–05:00 every day, for the whole house"),
+             ("With Hive Power+","25% off EV charging in Power+ mode with a compatible Hive charger, an equivalent 7.125p per kWh"),
+             ("Day rate","quote only; about 36.8–41.1p per kWh depending on region, 38.49p on average (MoneySavingExpert)"),
+             ("Standing charge","quote only; about 42.2–66.6p a day depending on region (Selectra)"),
+             ("Contract","fixed, electricity only, about 18 months"),
+             ("Exit fee","£100 per fuel on the current fix (MoneySavingExpert, Selectra); none in the last 49 days. Some sources quote a higher fee, so check your quote."),
+             ("Eligibility","an EV you charge at home, a smart electricity meter (fitted free) and Direct Debit; any car and any charger. Not for Economy 7 homes with storage heaters.")],
+      facts_note=f'<p>Rates checked 17 November 2026. British Gas only shows the day rate and standing charge in a postcode quote, so treat those as a guide. For the full breakdown, real charging costs and the exit fee, read our <a href="{GUIDE_BG}">British Gas Electric Driver (EV Power) guide</a>.</p>',
+      faq=[("What is the British Gas EV Power off-peak rate?",
+            "9.5p per kWh, 00:00–05:00 every day, for everything the house uses in those hours. Outside the window the day rate is about 38.49p per kWh on average and varies by region (roughly 36.8–41.1p). Rates last checked 17 November 2026."),
+           ("Is British Gas EV Power the same as Electric Driver?",
+            "Yes. Electric Driver was the old name for British Gas's EV tariff; it is now sold as EV Power."),
+           ("Who can get British Gas EV Power?",
+            "Anyone with an EV they charge at home, a smart electricity meter (British Gas fits one free) and Direct Debit. Any car and any charger works; only the Hive Power+ discount needs a compatible Hive charger. It is not for Economy 7 homes with storage heaters."),
+           ("Does British Gas EV Power have an exit fee?",
+            "Yes. The current fixed version, which runs for about 18 months, lists a £100 per fuel exit fee (MoneySavingExpert and Selectra, November 2026). It isn't charged in the last 49 days of the fix. Some sources quote a higher fee, so check your quote."),
+           ("How much would I save with British Gas EV Power?", None)]),
+ # Utility Warehouse: variable EV tariff, 00:00-05:00 GMT; 9p (1 service) / 8.5p (2) / 7.5p (3+), no exit fee, any EV/charger
+ # (uw.co.uk/energy/ev-tariffs). Peak 36.41p (MSE, which also uses the 9p one-service rate).
+ dict(slug="utility-warehouse-ev", name="Utility Warehouse EV", supplier="Utility Warehouse", off=9.00, peak=36.41, hours=5, window="00:00–05:00 GMT (01:00–06:00 in summer time)",
+      url="https://uw.co.uk/energy/ev-tariffs", smart=False, exit_fee="None", eligibility="A UW energy customer with a smart meter UW can connect to and an electric or plug-in hybrid car; works with any car and any charger",
+      blurb="Utility Warehouse's variable EV tariff: five hours from midnight to 5am GMT at 9p if you only take energy from UW, 8.5p with two UW services and 7.5p with three or more. No exit fee, and it works with any EV or charger. We use the 9p energy-only rate in our sums, as MoneySavingExpert does; the day rate averages about 36.41p.",
+      facts=[("Off-peak rate","9p per kWh with energy only, 8.5p with two UW services, 7.5p with three or more"),
+             ("Cheap window","00:00–05:00 GMT"),
+             ("Day rate","about 36.41p per kWh on average (MoneySavingExpert); varies by region"),
+             ("Contract","variable"),
+             ("Eligibility","a UW energy customer with a smart meter UW can connect to and an electric or plug-in hybrid car; any car and any charger"),
+             ("Exit fee","none")]),
+ # OVO Charge Anytime pay-as-you-go add-on: 13.33p/kWh for smart charging (ovoenergy.com, rate on 1/10/2026; MSE 13.3p).
+ dict(slug="ovo-charge-anytime", name="OVO Charge Anytime", supplier="OVO", off=13.33, peak=13.33, flat=True, hours=24, window="Any time of day — the cheap rate applies to the car's charging only",
+      url="https://www.ovoenergy.com/electric-cars/charge-anytime", smart=True, exit_fee="None; it's an add-on to your OVO tariff, and the monthly plans can be cancelled any time", eligibility="OVO customer, smart meter, compatible car or charger so OVO can measure what the car used",
+      blurb="Different from the rest: the house stays on your normal OVO rate and every kWh of smart charging that goes into the car is billed at 13.33p on pay as you go, whenever you charge. OVO also sells monthly plans from £26.50 that bundle home and public charging. Unbeatable if you can't charge overnight; dearer than a 6.5–9.9p overnight window if you can."),
 ]
 T = {t["slug"]: t for t in TARIFFS}
 POPULAR_FOR_TARIFF = ["tesla-model-y","tesla-model-3","mg4","skoda-enyaq","kia-ev3","renault-5"]
@@ -68,6 +140,7 @@ def monthly(v, tariff, miles=MILES, off_share=0.9, home_share=1.0):
 def petrol_monthly(miles=MILES): return miles/12/PETROL_MPG*4.546*PETROL_PPL
 def gbp(x): return f"£{x:,.0f}" if x>=20 else f"£{x:,.2f}"
 def pence(x): return f"{x:.1f}p"
+def pp(x): return f"{x:g}p"   # a tariff rate as published: 9.9p, 6.66p, 13.33p
 def hrs(h):
     hh=int(h); mm=int(round((h-hh)*60/15)*15); 
     if mm==60: hh+=1; mm=0
@@ -113,6 +186,7 @@ def shell(title, desc, canonical, body, jsonld=None, extra_head=""):
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>{CSS}</style>{ld}{extra_head}
+<script src="/assets/consent.js"></script>
 </head><body><div class="wrap">
 <nav class="top"><a class="brand" href="/">EV Charge Cost</a><a href="/">Calculator</a><a href="/cars/">Cars</a><a href="/tariffs/">Tariffs</a></nav>
 {body}
@@ -183,6 +257,8 @@ def car_page(c):
     if best["slug"]=="utility-warehouse-ev": best=sorted(TARIFFS,key=lambda t:monthly(v,t))[1]
     eff=mi_per_kwh(v); ppm_iog=ppm(v,iog["off"]); ppm_cap=ppm(v,CAP); ppm_pub=ppm(v,PUBLIC_RAPID); ppm_pet=PETROL_PPL*4.546/PETROL_MPG*100
     title=f"{name} charging cost UK 2026: per charge, per mile & per month"
+    IOGP=pp(iog["off"]); ovo=T["ovo-charge-anytime"]
+    alt=T["edf-goelectric"] if best["slug"]!="edf-goelectric" else T["eon-next-drive"]
     desc=f"What it costs to charge a {name} at home and in public: about {gbp(cost_full(v,iog['off']))} for a full charge on an EV tariff, {gbp(cost_full(v,CAP))} on the price cap, {pence(ppm_iog)}–{pence(ppm_cap)} per mile. Real-world figures, all UK EV tariffs compared."
     canonical=f"{SITE}/cars/{slug}/"
     variants_opts="".join(f'<option value="{i}"{" selected" if i==c["default_variant"] else ""}>{E(x["name"])} – {x["usable_kwh"]} kWh</option>' for i,x in enumerate(c["variants"]))
@@ -196,16 +272,19 @@ def car_page(c):
     winter = ("It has a heat pump as standard, so winter consumption typically rises 15–25% rather than the 30–40% you see on cars without one." if hp.startswith("standard")
               else f"Heat pump: {E(hp)}. Without one, expect winter consumption 30–40% above the figure used here; with it, closer to 15–25%.")
     faq=[
-     (f"How much does it cost to fully charge {art(name)} {name}?", f"From empty, the {v['name']} version needs about {full_charge_kwh(v):.0f} kWh from the socket once charging losses are included. On Intelligent Octopus Go (8p) that is around {gbp(cost_full(v,iog['off']))}; on the standard price cap it is around {gbp(cost_full(v,CAP))}; at a 79p public rapid charger about {gbp(cost_full(v,PUBLIC_RAPID))}."),
-     (f"What is the {name}'s cost per mile?", f"Using EV Database's real-world figure of {eff} mi/kWh: about {pence(ppm_iog)} per mile on an 8p EV tariff, {pence(ppm_cap)} on the price cap and {pence(ppm_pub)} on public rapid chargers. A 42 mpg petrol car at £1.38 a litre costs about {pence(ppm_pet)} per mile."),
+     (f"How much does it cost to fully charge {art(name)} {name}?", f"From empty, the {v['name']} version needs about {full_charge_kwh(v):.0f} kWh from the socket once charging losses are included. On Intelligent Octopus Go ({IOGP}) that is around {gbp(cost_full(v,iog['off']))}; on the standard price cap it is around {gbp(cost_full(v,CAP))}; at a 79p public rapid charger about {gbp(cost_full(v,PUBLIC_RAPID))}."),
+     (f"What is the {name}'s cost per mile?", f"Using EV Database's real-world figure of {eff} mi/kWh: about {pence(ppm_iog)} per mile on a {IOGP} EV tariff, {pence(ppm_cap)} on the price cap and {pence(ppm_pub)} on public rapid chargers. A 42 mpg petrol car at £1.38 a litre costs about {pence(ppm_pet)} per mile."),
      (f"How long does {art(name)} {name} take to charge at home?", f"On a 7 kW home charger the {v['usable_kwh']} kWh battery goes from empty to full in roughly {hrs(home_hours(v))}. Most nights you'll only be topping up 20–40%, which takes {hrs(home_hours(v)*0.3)} or so and fits inside any EV tariff window."),
-     (f"Which tariff is cheapest for {art(name)} {name}?", f"For an 8,000-mile-a-year driver charging at home, {cheapest['name']} gives the lowest charging bill in our comparison, but it has conditions. {best['name']} is the best mainstream choice, costing about {gbp(monthly(v,best))} a month for charging against {gbp(m_cap)} on the price cap."),
+     (f"Which tariff is cheapest for {art(name)} {name}?",
+      (f"For an 8,000-mile-a-year driver charging at home, {best['name']} gives the lowest charging bill in our comparison: about {gbp(monthly(v,best))} a month for charging against {gbp(m_cap)} on the price cap. {best.get('pick_note','')} {alt['name']} is almost as cheap at about {gbp(monthly(v,alt))} a month; it {alt.get('alt_note','')}."
+       if cheapest["slug"]==best["slug"] else
+       f"For an 8,000-mile-a-year driver charging at home, {cheapest['name']} gives the lowest charging bill in our comparison, but it has conditions. {best['name']} is the best mainstream choice, costing about {gbp(monthly(v,best))} a month for charging against {gbp(m_cap)} on the price cap.").replace("  "," ")),
     ]
     jsonld={"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in faq]}
     body=f"""
 <div class="crumbs"><a href="/">Home</a> › <a href="/cars/">Cars</a> › {E(name)}</div>
 <header class="hero"><h1>{E(name)} charging cost in the UK</h1>
-<p class="lead">Real-world figures for the {E(v['name'])}: <b>{eff} mi/kWh</b>, <b>{v['usable_kwh']} kWh</b> usable battery. A full charge costs about <b>{gbp(cost_full(v,iog['off']))}</b> on an 8p EV tariff, <b>{gbp(cost_full(v,CAP))}</b> on the price cap. Change the version, mileage and tariff below.</p></header>
+<p class="lead">Real-world figures for the {E(v['name'])}: <b>{eff} mi/kWh</b>, <b>{v['usable_kwh']} kWh</b> usable battery. A full charge costs about <b>{gbp(cost_full(v,iog['off']))}</b> on Intelligent Octopus Go ({IOGP}), <b>{gbp(cost_full(v,CAP))}</b> on the price cap. Change the version, mileage and tariff below.</p></header>
 
 <section class="grid2">
  <div class="panel">
@@ -231,7 +310,7 @@ def car_page(c):
 
 <h2>What {art(name)} {E(name)} costs on every UK EV tariff</h2>
 <div class="panel scroll"><table><thead><tr><th>Tariff</th><th class="num">Off-peak</th><th class="num">Per month</th><th class="num">Per mile</th><th class="num">Full charge</th></tr></thead><tbody id="ttable"></tbody></table>
-<p class="checked">Assumes 90% of home charging lands in the off-peak window. Standing charges and daytime household use aren't included. Rates checked {TODAY}.</p></div>
+<p class="checked">Assumes 90% of home charging lands in the off-peak window; peak rates are average day rates and vary by region. Standing charges and daytime household use aren't included. Rates checked {TODAY}.</p></div>
 
 <h2>Compare the {E(name)} with another EV</h2>
 <div class="panel"><div class="controls"><div><label for="cmp">Compare with</label><select id="cmp">{cmp_opts}</select></div></div>
@@ -239,7 +318,7 @@ def car_page(c):
 <div class="links" style="margin-top:8px">{"".join(f'<a href="/cars/{slug}/?compare={p}">vs {E(C[p]["make"]+" "+C[p]["model"])}</a>' for p in pts)}</div></div>
 
 <h2>Every {E(name)} version at a glance</h2>
-<div class="panel scroll"><table><thead><tr><th>Version</th><th class="num">Usable</th><th class="num">mi/kWh</th><th class="num">Full charge, 8p</th><th class="num">Full charge, cap</th><th class="num">0–100% on 7 kW</th><th class="num">AC / DC max</th></tr></thead><tbody>{variant_rows}</tbody></table>
+<div class="panel scroll"><table><thead><tr><th>Version</th><th class="num">Usable</th><th class="num">mi/kWh</th><th class="num">Full charge, {IOGP}</th><th class="num">Full charge, cap</th><th class="num">0–100% on 7 kW</th><th class="num">AC / DC max</th></tr></thead><tbody>{variant_rows}</tbody></table>
 {"<p class='checked'>Versions marked as older model years are no longer sold new but are common on the used market.</p>" if legacy else ""}</div>
 
 <section class="prose"><h2>About charging the {E(name)}</h2>
@@ -247,13 +326,13 @@ def car_page(c):
 <p>{winter} The efficiency figure on this page is EV Database's real-world combined number, which sits between the official WLTP figure and a cold motorway run; it's the honest one to budget with.</p>
 <p>On sale {E(c['on_sale'])}. Home charging at 7 kW ({E(str(v['ac_kw']))} kW AC on-board charger on this version) adds about {7*LOSS*eff:.0f} miles of range per hour. Public rapid charging peaks at {v['dc_kw']} kW on the {E(v['name'])}; at typical UK rapid-charger prices of 75–85p/kWh that works out at {pence(ppm_pub)} per mile — roughly the same as petrol — so the whole saving with this car comes from charging at home on a tariff with a cheap window.</p>
 <h2>Which tariff suits {art(name)} {E(name)}?</h2>
-<p>Charging {MILES:,} miles a year at home, the {E(name)} needs about {MILES*kwh_per_mile(v)/365:.0f} kWh a night on average — {hrs(MILES*kwh_per_mile(v)/365/7)} of charging at 7 kW — so it fits comfortably inside a five- or six-hour window. Our pick is <a href="/tariffs/{best['slug']}/">{E(best['name'])}</a>: about {gbp(monthly(v,best))} a month for charging, {gbp((m_cap-monthly(v,best))*12)} a year less than the price cap. <a href="/tariffs/edf-goelectric/">EDF GoElectric</a> is fractionally cheaper per kWh and works with any charger, but has a higher peak rate and exit fees. If you can't charge overnight, <a href="/tariffs/ovo-charge-anytime/">OVO Charge Anytime</a> gives 14p at any time of day.</p>
+<p>Charging {MILES:,} miles a year at home, the {E(name)} needs about {MILES*kwh_per_mile(v)/365:.0f} kWh a night on average — {hrs(MILES*kwh_per_mile(v)/365/7)} of charging at 7 kW — so it fits comfortably inside a five- or six-hour window. Our pick is <a href="/tariffs/{best['slug']}/">{E(best['name'])}</a>: about {gbp(monthly(v,best))} a month for charging, {gbp((m_cap-monthly(v,best))*12)} a year less than the price cap. {E(best.get('pick_note',''))} <a href="/tariffs/{alt['slug']}/">{E(alt['name'])}</a> is almost as cheap at about {gbp(monthly(v,alt))} a month; it {E(alt.get('alt_note',''))}. If you can't charge overnight, <a href="/tariffs/ovo-charge-anytime/">OVO Charge Anytime</a> gives {pp(ovo['off'])} at any time of day.</p>
 <p>Run your own numbers, including public charging and your petrol comparison, in the <a href="/">EV charging cost calculator</a>.</p>
 </section>
 
 <h2>Common questions</h2>
 {"".join(f"<details><summary>{E(q)}</summary><p>{E(a)}</p></details>" for q,a in faq)}
-<p class="checked">Battery and efficiency data: EV Database (real-world). Charging power: manufacturer specifications. Last checked {TODAY}.</p>
+<p class="checked">Battery and efficiency data: EV Database (real-world). Charging power: manufacturer specifications. Last checked {CAR_DATA_CHECKED}.</p>
 {data_script({"kind":"car","slug":slug,"name":name})}"""
     return shell(title,desc,canonical,body,jsonld)
 
@@ -262,24 +341,33 @@ def tariff_page(t):
     slug=t["slug"]; name=t["name"]; ref={"wh_per_mi":1000/3.5,"usable_kwh":60}
     m=monthly(ref,t); mcap=monthly(ref,T["standard-price-cap"]); p=ppm(ref, t["off"] if t.get("flat") else 0.9*t["off"]+0.1*t["peak"])
     title=f"{name} review 2026: rates, hours, who it suits and what you'd pay"
-    desc=f"{name} from {t['supplier']}: {t['off']}p/kWh off-peak, {t['window']}. What an average EV driver pays per month, how it compares with the price cap and other EV tariffs, eligibility and exit fees."
+    desc=t.get("desc") or f"{name} from {t['supplier']}: {pp(t['off'])}/kWh {'for EV charging at any time' if t.get('flat') and slug!='standard-price-cap' else ('flat' if t.get('flat') else 'off-peak, '+t['window'].split(',')[0])}. What an average EV driver pays per month, how it compares with the price cap and other EV tariffs, eligibility and exit fees."
     canonical=f"{SITE}/tariffs/{slug}/"
     others=[x for x in TARIFFS if x["slug"] not in (slug,"standard-price-cap")]
-    rows="".join(f'<tr><td><a href="/tariffs/{x["slug"]}/">{E(x["name"])}</a></td><td class="num">{x["off"]}p</td><td class="num">{"—" if x.get("flat") else str(x["peak"])+"p"}</td><td class="num">{x["hours"] if x["hours"]<24 else "24"} h</td><td class="num">{gbp(monthly(ref,x))}</td></tr>' for x in sorted(TARIFFS,key=lambda x:monthly(ref,x)))
-    faq=[(f"What is the {name} off-peak rate?", f"{t['off']}p per kWh, {t['window'].lower() if not t.get('flat') else 'at any time of day for the car'}. {'Outside the window electricity costs about '+str(t['peak'])+'p per kWh.' if not t.get('flat') else ''} Rates checked {TODAY}."),
+    def peakcell(x):
+        if x.get("flat"): return '<td class="num">—</td>'
+        return f'<td class="num" title="{E(x.get("peak_title","Average day rate; varies by region. Checked "+TODAY+"."))}">~{pp(x["peak"])}</td>'
+    rows="".join(f'<tr><td><a href="/tariffs/{x["slug"]}/">{E(x["name"])}</a></td><td class="num">{pp(x["off"])}</td>{peakcell(x)}<td class="num">{x["hours"] if x["hours"]<24 else "24"} h</td><td class="num">{gbp(monthly(ref,x))}</td></tr>' for x in sorted(TARIFFS,key=lambda x:monthly(ref,x)))
+    save_q=(f"How much would I save with {name}?", f"An 8,000-mile driver in a typical 3.5 mi/kWh EV, charging at home, pays about {gbp(m)} a month for charging on {name} against {gbp(mcap)} on the price cap — around {gbp((mcap-m)*12)} a year. The rest of the house {'pays the same flat rate.' if t.get('flat') else 'pays the day rate outside the window, about '+pp(t['peak'])+' on average, which can eat into the saving if you use a lot of daytime electricity.'}")
+    faq=[(f"What is the {name} off-peak rate?", f"{pp(t['off'])} per kWh, {t['window'][:1].lower()+t['window'][1:] if not t.get('flat') else 'at any time of day for the car'}. {'Outside the window the day rate is about '+pp(t['peak'])+' per kWh on average and varies by region.' if not t.get('flat') else ''} Rates checked {TODAY}."),
           (f"Who can get {name}?", t["eligibility"]+"."),
           (f"Does {name} have an exit fee?", t["exit_fee"]+"."),
-          (f"How much would I save with {name}?", f"An 8,000-mile driver in a typical 3.5 mi/kWh EV, charging at home, pays about {gbp(m)} a month for charging on {name} against {gbp(mcap)} on the price cap — around {gbp((mcap-m)*12)} a year. The rest of the house {'pays the same flat rate.' if t.get('flat') else 'pays the peak rate outside the window, which can eat into the saving if you use a lot of daytime electricity.'}")]
+          save_q]
+    if t.get("faq"): faq=[save_q if a is None else (q,a) for q,a in t["faq"]]
     jsonld={"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in faq]}
-    peak_note = "" if t.get("flat") else f"<p><b>The whole-house question.</b> The cheap rate applies to everything you use in the window, not just the car — so a dishwasher or immersion heater on a timer also gets {t['off']}p. But everything outside the window is billed at {t['peak']}p, {'above' if t['peak']>CAP else 'close to'} the price cap. A household using 3,000 kWh a year of daytime electricity would pay about {gbp(3000*(t['peak']-CAP)/100)} a year {'more' if t['peak']>CAP else 'less'} on the house than on the cap; a {'high' if t['peak']>29 else 'moderate'} peak rate like this one only makes sense if the car saving is bigger than that.</p>"
+    peak_note = "" if t.get("flat") else f"<p><b>The whole-house question.</b> The cheap rate applies to everything you use in the window, not just the car — so a dishwasher or immersion heater on a timer also gets {pp(t['off'])}. But everything outside the window is billed at the day rate, about {pp(t['peak'])} on average (it varies by region), {('well above' if t['peak']-CAP>5 else 'above') if t['peak']>CAP else 'close to'} the {pp(CAP)} price cap. A household using 3,000 kWh a year of daytime electricity would pay about {gbp(3000*(t['peak']-CAP)/100)} a year {'more' if t['peak']>CAP else 'less'} on the house than on the cap; a {'high' if t['peak']>29 else 'moderate'} peak rate like this one only makes sense if the car saving is bigger than that.</p>"
+    stats=t.get("stats") or [(pp(t['off']), "per kWh "+('flat, car only' if slug=='ovo-charge-anytime' else ('flat' if t.get('flat') else 'off-peak'))),
+        ('—' if t.get('flat') else '~'+pp(t['peak']), 'peak rate' if t.get('flat') else 'average day rate (varies by region)'),
+        ('Any time' if t['hours']>=24 else (str(t['hours'])+' hours' if t['hours'] else 'None'), 'cheap window'),
+        ('Yes' if t['smart'] else 'No', 'smart charging needed')]
+    stats_html="\n".join(f' <div class="stat"><b>{E(a)}</b><span>{E(b)}</span></div>' for a,b in stats)
+    facts=[("Supplier",t['supplier'])]+(t.get("facts") or [("Cheap window",t['window']),("Eligibility",t['eligibility']),("Exit fee",t['exit_fee'])])
+    facts_html="".join(f"<li><b>{E(a)}:</b> {E(b)}</li>" for a,b in facts)
     body=f"""
 <div class="crumbs"><a href="/">Home</a> › <a href="/tariffs/">Tariffs</a> › {E(name)}</div>
 <header class="hero"><h1>{E(name)}: rates, hours and what you'd pay</h1><p class="lead">{E(t['blurb'])}</p></header>
 <div class="stats">
- <div class="stat"><b>{t['off']}p</b><span>per kWh {'flat, car only' if slug=='ovo-charge-anytime' else ('flat' if t.get('flat') else 'off-peak')}</span></div>
- <div class="stat"><b>{'—' if t.get('flat') else str(t['peak'])+'p'}</b><span>peak rate</span></div>
- <div class="stat"><b>{'Any time' if t['hours']>=24 else (str(t['hours'])+' hours' if t['hours'] else 'None')}</b><span>cheap window</span></div>
- <div class="stat"><b>{'Yes' if t['smart'] else 'No'}</b><span>smart charging needed</span></div>
+{stats_html}
 </div>
 <section class="grid2">
  <div class="panel"><h3>Try your own numbers</h3><div class="controls" style="margin-top:12px">
@@ -291,14 +379,14 @@ def tariff_page(t):
   <p style="margin-top:16px"><a class="btn amber" href="{t['url']}" rel="nofollow sponsored noopener" target="_blank">{'See the price cap explained' if slug=='standard-price-cap' else 'See '+E(name)}</a></p></aside>
 </section>
 <section class="prose"><h2>Key facts</h2>
-<ul><li><b>Supplier:</b> {E(t['supplier'])}</li><li><b>Cheap window:</b> {E(t['window'])}</li><li><b>Eligibility:</b> {E(t['eligibility'])}</li><li><b>Exit fee:</b> {E(t['exit_fee'])}</li><li><b>Smart meter:</b> required{' — every time-of-use tariff needs one' if not t.get('flat') or slug=='ovo-charge-anytime' else ''}</li></ul>
-{peak_note}
+<ul>{facts_html}<li><b>Smart meter:</b> required{' — every time-of-use tariff needs one' if not t.get('flat') or slug=='ovo-charge-anytime' else ''}</li></ul>
+{t.get('facts_note','')}{chr(10) if t.get('facts_note') else ''}{peak_note}
 <p><b>Will your car fill up in the window?</b> A 7 kW charger delivers about {7*LOSS:.1f} kWh an hour into the battery. {'There is no window to worry about.' if t['hours']>=24 or t['hours']==0 else f"In {t['hours']} hours that is roughly {7*LOSS*t['hours']:.0f} kWh, enough to add {7*LOSS*t['hours']*3.5:.0f} miles at 3.5 mi/kWh — more than most people drive in a day, but not a full charge on a 75–80 kWh battery from empty. If you regularly arrive home nearly flat, a longer window or a smart tariff that adds slots matters more than a fraction of a penny per kWh."}</p>
 </section>
 <h2>What popular EVs cost on {E(name)}</h2>
 <div class="panel scroll"><table><thead><tr><th>Car</th><th class="num">mi/kWh</th><th class="num">Per month</th><th class="num">On the cap</th><th class="num">Saving / yr</th></tr></thead><tbody id="ctable"></tbody></table></div>
 <h2>{E(name)} versus the other EV tariffs</h2>
-<div class="panel scroll"><table><thead><tr><th>Tariff</th><th class="num">Off-peak</th><th class="num">Peak</th><th class="num">Window</th><th class="num">Per month*</th></tr></thead><tbody>{rows}</tbody></table><p class="checked">*8,000 miles a year, 3.5 mi/kWh, home charging. Standing charges excluded. Rates checked {TODAY}.</p></div>
+<div class="panel scroll"><table><thead><tr><th>Tariff</th><th class="num">Off-peak</th><th class="num">Peak</th><th class="num">Window</th><th class="num">Per month*</th></tr></thead><tbody>{rows}</tbody></table><p class="checked">*8,000 miles a year, 3.5 mi/kWh, home charging with 90% in the cheap window. Peak rates are average day rates and vary by region. Standing charges excluded. Rates checked {TODAY}.</p></div>
 <h2>Common questions</h2>
 {"".join(f"<details><summary>{E(q)}</summary><p>{E(a)}</p></details>" for q,a in faq)}
 <p class="checked">Not financial advice. Prices and conditions change; confirm with {E(t['supplier'])} before switching. Use the <a href="/">calculator</a> to include public charging and your petrol comparison.</p>
@@ -308,15 +396,15 @@ def tariff_page(t):
 # ---------- index pages ----------
 def cars_index():
     iog=T["intelligent-octopus-go"]
-    cards="".join(f'<a class="card" href="/cars/{c["slug"]}/"><b>{E(c["make"]+" "+c["model"])}</b><span>{mi_per_kwh(c["variants"][c["default_variant"]])} mi/kWh · full charge {gbp(cost_full(c["variants"][c["default_variant"]],iog["off"]))} on 8p / {gbp(cost_full(c["variants"][c["default_variant"]],CAP))} on the cap</span></a>' for c in sorted(cars,key=lambda c:c["make"]+c["model"]))
+    cards="".join(f'<a class="card" href="/cars/{c["slug"]}/"><b>{E(c["make"]+" "+c["model"])}</b><span>{mi_per_kwh(c["variants"][c["default_variant"]])} mi/kWh · full charge {gbp(cost_full(c["variants"][c["default_variant"]],iog["off"]))} on {pp(iog["off"])} / {gbp(cost_full(c["variants"][c["default_variant"]],CAP))} on the cap</span></a>' for c in sorted(cars,key=lambda c:c["make"]+c["model"]))
     body=f"""<div class="crumbs"><a href="/">Home</a> › Cars</div><header class="hero"><h1>Charging costs by car</h1><p class="lead">Real-world running costs for the {len(cars)} most popular EVs in Britain: cost per charge, per mile and per month on every UK EV tariff, with every battery version covered. Ranked by 2025 sales and how many are on the road.</p></header><div class="cards">{cards}</div>
-<section class="prose" style="margin-top:36px"><h2>How to read these pages</h2><p>Each page uses EV Database's real-world efficiency rather than the official WLTP figure, adds 10% for charging losses, and prices the electricity at the tariff you choose. The default is Intelligent Octopus Go at 8p per kWh because it is the most widely used EV tariff; the standard price cap ({CAP}p) is shown alongside so you can see what switching is worth. Cost per mile is the cleanest way to compare cars with different battery sizes.</p></section>"""
+<section class="prose" style="margin-top:36px"><h2>How to read these pages</h2><p>Each page uses EV Database's real-world efficiency rather than the official WLTP figure, adds 10% for charging losses, and prices the electricity at the tariff you choose. The default is Intelligent Octopus Go at {pp(iog["off"])} per kWh (the standard version; Octopus advertises 6.5p on its Max version) because it is the most widely used EV tariff; the standard price cap ({CAP}p) is shown alongside so you can see what switching is worth. Cost per mile is the cleanest way to compare cars with different battery sizes.</p></section>"""
     return shell("EV charging cost by car: every popular UK electric car compared (2026)", f"Charging cost per mile, per charge and per month for the {len(cars)} best-selling electric cars in the UK, on every EV tariff. Real-world efficiency data.", f"{SITE}/cars/", body)
 def tariffs_index():
     ref={"wh_per_mi":1000/3.5,"usable_kwh":60}
-    cards="".join(f'<a class="card" href="/tariffs/{t["slug"]}/"><b>{E(t["name"])}</b><span>{t["off"]}p {"flat" if t.get("flat") else "off-peak"} · {E(t["window"].split(",")[0])} · {gbp(monthly(ref,t))}/month for 8,000 miles</span></a>' for t in sorted(TARIFFS,key=lambda t:monthly(ref,t)))
+    cards="".join(f'<a class="card" href="/tariffs/{t["slug"]}/"><b>{E(t["name"])}</b><span>{pp(t["off"])} {"flat" if t.get("flat") else "off-peak"} · {E(t["window"].split(",")[0])} · {gbp(monthly(ref,t))}/month for 8,000 miles</span></a>' for t in sorted(TARIFFS,key=lambda t:monthly(ref,t)))
     body=f"""<div class="crumbs"><a href="/">Home</a> › Tariffs</div><header class="hero"><h1>UK EV tariffs compared</h1><p class="lead">Every mainstream electric-car tariff in Britain: the cheap rate, the hours, the catches, and what a typical driver pays. Rates checked {TODAY}.</p></header><div class="cards">{cards}</div>
-<section class="prose" style="margin-top:36px"><h2>Choosing between them</h2><p>Three things decide it. First, whether your car or charger can do smart scheduling — if not, Octopus Go, EDF GoElectric and British Gas EV Power work with anything. Second, how much electricity the rest of your house uses in the daytime: tariffs with a 30p peak rate punish heavy daytime use. Third, whether you can charge overnight at all; if not, OVO Charge Anytime's 14p at any hour is the one to look at. The <a href="/">calculator</a> ranks them for your own mileage and car.</p></section>"""
+<section class="prose" style="margin-top:36px"><h2>Choosing between them</h2><p>Three things decide it. First, whether your car or charger can do smart scheduling — if not, Octopus Go, EDF GoElectric, Utility Warehouse and British Gas EV Power work with anything. Second, how much electricity the rest of your house uses in the daytime: day rates on EV tariffs average {round(min(x['peak'] for x in TARIFFS if not x.get('flat')))}–{round(max(x['peak'] for x in TARIFFS if not x.get('flat')))}p, well above the {pp(CAP)} price cap, so they punish heavy daytime use. Third, whether you can charge overnight at all; if not, OVO Charge Anytime's {pp(T['ovo-charge-anytime']['off'])} at any hour is the one to look at. The <a href="/">calculator</a> ranks them for your own mileage and car.</p></section>"""
     return shell("Best EV tariffs UK 2026: Intelligent Octopus Go, EDF GoElectric, E.ON Next Drive and more compared", "All UK electric-car tariffs compared: off-peak rates, windows, compatibility, exit fees and what an average EV driver pays per month on each.", f"{SITE}/tariffs/", body)
 
 # ---------- write ----------
@@ -327,6 +415,8 @@ urls=[("",1.0),("cars/",0.8),("tariffs/",0.8)]
 for c in cars: w(f"cars/{c['slug']}/index.html",car_page(c)); urls.append((f"cars/{c['slug']}/",0.7))
 for t in TARIFFS: w(f"tariffs/{t['slug']}/index.html",tariff_page(t)); urls.append((f"tariffs/{t['slug']}/",0.7))
 w("cars/index.html",cars_index()); w("tariffs/index.html",tariffs_index())
-sm='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+"".join(f"  <url><loc>{SITE}/{u}</loc><lastmod>{ISO}</lastmod><changefreq>monthly</changefreq><priority>{p}</priority></url>\n" for u,p in urls)+"</urlset>\n"
+# Hand-written pages (not generated here) that belong in the sitemap; bump their date when you edit them.
+GUIDES=[("guides/cheapest-way-to-charge-ev-at-home/",0.8,"2026-11-17"),("guides/british-gas-electric-driver-tariff/",0.8,"2026-11-17")]
+sm='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+"".join(f"  <url><loc>{SITE}/{u}</loc><lastmod>{ISO}</lastmod><changefreq>monthly</changefreq><priority>{p}</priority></url>\n" for u,p in urls)+"".join(f"  <url><loc>{SITE}/{u}</loc><lastmod>{d}</lastmod><changefreq>monthly</changefreq><priority>{p}</priority></url>\n" for u,p,d in GUIDES)+"</urlset>\n"
 w("sitemap.xml",sm)
 print(f"built {len(cars)} car pages, {len(TARIFFS)} tariff pages, 2 index pages, sitemap with {len(urls)} URLs")

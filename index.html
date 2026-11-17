@@ -16,8 +16,8 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
-{"@type":"Question","name":"How much does it cost to charge an electric car at home in the UK?","acceptedAnswer":{"@type":"Answer","text":"On the standard price cap (about 26p per kWh) a typical 60 kWh battery costs roughly £16 to fill from empty. On a dedicated EV tariff with an off-peak rate of 7–9p per kWh the same charge costs £4–6."}},
-{"@type":"Question","name":"What is the cheapest EV tariff in the UK?","acceptedAnswer":{"@type":"Answer","text":"As of September 2026 the lowest off-peak rates are around 6.9–8p per kWh from EDF GoElectric, Utility Warehouse, Intelligent Octopus Go and E.ON Next Drive. The best tariff for you depends on your daytime usage, standing charge and whether your car or charger is compatible."}},
+{"@type":"Question","name":"How much does it cost to charge an electric car at home in the UK?","acceptedAnswer":{"@type":"Answer","text":"On the standard price cap (about 26p per kWh) a typical 60 kWh battery costs roughly £16 to fill from empty. On a dedicated EV tariff with an off-peak rate of 6.5–9.9p per kWh the same charge costs £4–7."}},
+{"@type":"Question","name":"What is the cheapest EV tariff in the UK?","acceptedAnswer":{"@type":"Answer","text":"As of November 2026 the lowest off-peak rates are 6.5p per kWh on E.ON Next Drive Smart and 6.66p on EDF GoElectric; Octopus advertises Intelligent Octopus Go from 6.5p on its Max version (9.9p on the standard version). The best tariff for you depends on your daytime usage, standing charge and whether your car or charger is compatible."}},
 {"@type":"Question","name":"Is charging an EV cheaper than petrol?","acceptedAnswer":{"@type":"Answer","text":"Charging at home on an EV tariff costs around 2–3p per mile, against roughly 14–16p per mile for a 42 mpg petrol car at £1.38 per litre. Public rapid charging at 75–85p per kWh is closer to petrol cost per mile."}}
 ]}
 </script>
@@ -151,7 +151,7 @@ footer p{max-width:80ch;margin-bottom:8px}
 
 <header class="top">
   <h1>How much does it cost to charge your electric car?</h1>
-  <p>Enter your mileage and how you charge. See your monthly cost, cost per mile, and which UK EV tariff would save you the most. Rates are September 2026 figures – always check the supplier before switching.</p>
+  <p>Enter your mileage and how you charge. See your monthly cost, cost per mile, and which UK EV tariff would save you the most. Rates checked 17 November 2026 – always check the supplier before switching.</p>
 </header>
 
 <div class="layout">
@@ -254,7 +254,7 @@ footer p{max-width:80ch;margin-bottom:8px}
       <p>Monthly cost with your inputs above. Standing charges and your household's daytime usage aren't included, so treat this as the charging-only difference.</p>
     </header>
     <ul class="bars" id="bars"></ul>
-    <p class="checked">Rates checked <time id="ratesChecked">29 September 2026</time>. Peak rates vary by region – use your bill for exact figures.</p>
+    <p class="checked">Rates checked <time id="ratesChecked">17 November 2026</time>. Peak rates vary by region – use your bill for exact figures.</p>
   </div>
 </section>
 
@@ -278,7 +278,7 @@ footer p{max-width:80ch;margin-bottom:8px}
     <a class="card" href="/cars/renault-5/"><b>Renault 5</b><span>Britain's favourite EV with private buyers</span></a>
     <a class="card" href="/cars/"><b>All 25 cars →</b><span>Every popular EV, every battery version, every tariff</span></a>
     <a class="card" href="/tariffs/intelligent-octopus-go/"><b>Intelligent Octopus Go</b><span>Rates, hours, compatibility, who it suits</span></a>
-    <a class="card" href="/tariffs/edf-goelectric/"><b>EDF GoElectric</b><span>Cheapest window, highest peak rate – the trade-off</span></a>
+    <a class="card" href="/tariffs/edf-goelectric/"><b>EDF GoElectric</b><span>Seven-hour window, any car or charger – and a £75 exit fee</span></a>
     <a class="card" href="/tariffs/"><b>All EV tariffs →</b><span>Eight tariffs compared side by side</span></a>
   </div>
 </section>
@@ -317,11 +317,11 @@ footer p{max-width:80ch;margin-bottom:8px}
   <h2>Common questions</h2>
   <details>
     <summary>How much does it cost to fully charge an EV at home?</summary>
-    <p>A 60 kWh battery charged from empty needs about 66 kWh from the socket after losses. On the price cap (26.32p from 1 October 2026) that's around £17. On an 8p EV tariff it's about £5.</p>
+    <p>A 60 kWh battery charged from empty needs about 66 kWh from the socket after losses. On the price cap (26.32p from 1 October 2026) that's around £17. On a 6.5p EV tariff it's about £4.</p>
   </details>
   <details>
     <summary>Which EV tariff is cheapest?</summary>
-    <p>The lowest headline off-peak rates in September 2026 are EDF GoElectric (6.99p), Utility Warehouse (6.9p, with conditions), Intelligent Octopus Go (8p) and E.ON Next Drive Smart (8.5p). The right one depends on the length of the cheap window, the peak rate you'll pay for the rest of the house, and whether your car or charger is compatible. Use the comparison above with your own numbers.</p>
+    <p>The lowest headline off-peak rates in November 2026 are E.ON Next Drive Smart (6.5p, needs a supported car or charger), EDF GoElectric (6.66p, any car), Intelligent Octopus Go (from 6.5p on its Max version, 9.9p on the standard version) and Utility Warehouse (9p, or 7.5p if you take three or more UW services). The right one depends on the length of the cheap window, the peak rate you'll pay for the rest of the house, and whether your car or charger is compatible. Use the comparison above with your own numbers.</p>
   </details>
   <details>
     <summary>Do I need a smart meter?</summary>
@@ -333,7 +333,7 @@ footer p{max-width:80ch;margin-bottom:8px}
   </details>
   <details>
     <summary>Where do the numbers come from?</summary>
-    <p>Tariff rates are taken from supplier websites and independent comparisons in September 2026 and rounded. Peak rates vary by region, so enter your own from your bill for an exact figure. Nothing here is financial advice.</p>
+    <p>Tariff rates are taken from supplier websites and MoneySavingExpert's EV tariff table, checked 17 November 2026. Peak rates are average day rates and vary by region, so enter your own from your bill for an exact figure. Nothing here is financial advice.</p>
   </details>
 </section>
 
@@ -350,13 +350,13 @@ footer p{max-width:80ch;margin-bottom:8px}
 // hours = length of cheap window; smart = needs a compatible car/charger; cond = extra conditions shown to the user.
 const TARIFFS = [
   {id:"cap",   name:"Standard price cap",      off:26.32, peak:26.32, win:"No off-peak", flat:true, hours:0},
-  {id:"iog",   name:"Intelligent Octopus Go",  off:8.00,  peak:27.00, win:"23:30–05:30 + smart slots", hours:6, smart:true, url:"https://octopus.energy/smart/intelligent-octopus-go/", cond:["Needs a compatible car or charger for smart scheduling","Smart meter required","No exit fee"]},
-  {id:"go",    name:"Octopus Go",              off:8.50,  peak:27.00, win:"00:30–05:30", hours:5, url:"https://octopus.energy/smart/go/", cond:["Works with any car and charger","Smart meter required"]},
-  {id:"edf",   name:"EDF GoElectric",          off:6.99,  peak:30.00, win:"23:00–06:00", hours:7, url:"https://www.edfenergy.com/electric-cars/ev-tariffs", cond:["Works with any car and charger","Higher peak rate – check your daytime usage","Exit fees if you leave within two years"]},
-  {id:"eon",   name:"E.ON Next Drive Smart",   off:8.50,  peak:30.87, win:"00:00–06:00", hours:6, smart:true, url:"https://www.eonnext.com/electric-vehicles", cond:["Smart charging through the E.ON app","Higher peak rate – check your daytime usage","No exit fee"]},
-  {id:"bg",    name:"British Gas EV Power",    off:9.00,  peak:27.50, win:"00:00–05:00", hours:5, url:"https://www.britishgas.co.uk/energy/electric-vehicles.html", cond:["Smart meter required"]},
-  {id:"uw",    name:"Utility Warehouse EV",    off:6.90,  peak:27.16, win:"00:00–05:00 GMT, bundle required", hours:5, url:"https://uw.co.uk/", cond:["Only with two other UW services (broadband, mobile or boiler cover)","Window shifts to 01:00–06:00 in summer time"]},
-  {id:"ovo",   name:"OVO Charge Anytime",      off:14.00, peak:14.00, win:"Any time, EV charging only", flat:true, hours:24, smart:true, url:"https://www.ovoenergy.com/electric-cars/charge-anytime", cond:["Cheap rate applies to the car only, not the house","Needs a compatible car or charger","Good if you can't charge overnight"]},
+  {id:"iog",   name:"Intelligent Octopus Go",  off:9.90,  peak:33.90, win:"23:30–05:30 + smart slots", hours:6, smart:true, url:"https://octopus.energy/smart/intelligent-octopus-go/", cond:["Needs a compatible car or charger for smart scheduling","9.9p on the standard version; Octopus advertises 6.5p on its Max version, which has a higher day rate","No exit fee on the standard version"]},
+  {id:"go",    name:"Octopus Go",              off:9.40,  peak:34.20, win:"00:30–05:30", hours:5, url:"https://octopus.energy/smart/go/", cond:["Works with any car and charger","Smart meter required","No exit fee on the variable version (£50 on the 12-month fix)"]},
+  {id:"edf",   name:"EDF GoElectric",          off:6.66,  peak:32.99, win:"23:00–06:00", hours:7, url:"https://www.edfenergy.com/electric-cars/ev-tariffs/goelectric", cond:["Works with any car and charger","Seven-hour window and the lowest average day rate of the EV tariffs here","£75 exit fee"]},
+  {id:"eon",   name:"E.ON Next Drive Smart",   off:6.50,  peak:34.32, win:"00:00–06:00 + smart slots", hours:6, smart:true, url:"https://www.eonnext.com/tariffs/next-drive/smart", cond:["Needs a supported car or charger connected to the E.ON Next Home app","Rates fixed for 12 months","No exit fee"]},
+  {id:"bg",    name:"British Gas EV Power",    off:9.50,  peak:38.49, win:"00:00–05:00", hours:5, url:"https://www.britishgas.co.uk/energy/ev-tariff.html", cond:["Formerly called Electric Driver","Works with any car and charger; smart meter required","Day rate about 38.5p on average, varies by region – check your daytime usage","£100 per fuel exit fee on the current fix"]},
+  {id:"uw",    name:"Utility Warehouse EV",    off:9.00,  peak:36.41, win:"00:00–05:00 GMT", hours:5, url:"https://uw.co.uk/energy/ev-tariffs", cond:["9p with energy only; 8.5p with two UW services, 7.5p with three or more","Works with any car and charger; no exit fee","Window shifts to 01:00–06:00 in summer time"]},
+  {id:"ovo",   name:"OVO Charge Anytime",      off:13.33, peak:13.33, win:"Any time, EV charging only", flat:true, hours:24, smart:true, url:"https://www.ovoenergy.com/electric-cars/charge-anytime", cond:["Cheap rate applies to the car only, not the house","Needs a compatible car or charger","Good if you can't charge overnight"]},
   {id:"custom",name:"My own rates",            off:8.00,  peak:27.00, win:"Enter your rates", hours:6},
 ];
 const PUBLIC_OFFER = {name:"A public charging plan", url:"https://www.zap-map.com/", cond:["Most of your charging is public, so a home tariff won't change much","Network subscriptions and lamp-post chargers cut the per-kWh price","Workplace charging, if available, is usually cheapest"]};
@@ -461,9 +461,6 @@ function recommend(rows, capCost, s){
     const longer=candidates.filter(r=>r.t.hours>=6 && r.cost<=cheapest.cost*1.12);
     if(longer.length) best=longer[0];
   }
-  if(best.t.id==="uw"){ // bundle requirement puts most people off; offer it as a note, lead with the next one
-    const alt=candidates.find(r=>r.t.id!=="uw"); if(alt) best=alt;
-  }
   const saving=(capCost-best.cost)*12;
   const why = longWindowNeeded
     ? `You need around ${Math.round(nightlyKwh)} kWh a night, so a longer off-peak window matters more than a fraction of a penny per kWh.`
@@ -471,7 +468,7 @@ function recommend(rows, capCost, s){
   const notes=[...(best.t.cond||[])];
   if(best.t.smart) notes.push("If your car or charger isn't compatible, EDF GoElectric or Octopus Go work with anything.");
   const uw=candidates.find(r=>r.t.id==="uw");
-  if(uw && uw.cost<best.cost) notes.push(`Utility Warehouse would be ${gbp((best.cost-uw.cost)*12)} a year cheaper still, if you're happy to bundle broadband or mobile with them.`);
+  if(uw && uw.cost<best.cost) notes.push(`Utility Warehouse would be ${gbp((best.cost-uw.cost)*12)} a year cheaper still, and its rate drops further if you take more UW services.`);
   set(best.t.name, why, notes, `See ${best.t.name}`, best.t.url);
 }
 
