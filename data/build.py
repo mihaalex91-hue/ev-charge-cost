@@ -416,7 +416,7 @@ for c in cars: w(f"cars/{c['slug']}/index.html",car_page(c)); urls.append((f"car
 for t in TARIFFS: w(f"tariffs/{t['slug']}/index.html",tariff_page(t)); urls.append((f"tariffs/{t['slug']}/",0.7))
 w("cars/index.html",cars_index()); w("tariffs/index.html",tariffs_index())
 # Hand-written pages (not generated here) that belong in the sitemap; bump their date when you edit them.
-GUIDES=[("guides/cheapest-way-to-charge-ev-at-home/",0.8,"2026-11-17"),("guides/british-gas-electric-driver-tariff/",0.8,"2026-11-17")]
+GUIDES=[("guides/cheapest-way-to-charge-ev-at-home/",0.8,"2026-11-17"),("guides/british-gas-electric-driver-tariff/",0.8,"2026-11-17"),("guides/how-much-to-charge-electric-car-at-home/",0.8,"2026-11-23"),("electricity-bill-calculator/",0.8,"2026-11-24")]
 sm='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+"".join(f"  <url><loc>{SITE}/{u}</loc><lastmod>{ISO}</lastmod><changefreq>monthly</changefreq><priority>{p}</priority></url>\n" for u,p in urls)+"".join(f"  <url><loc>{SITE}/{u}</loc><lastmod>{d}</lastmod><changefreq>monthly</changefreq><priority>{p}</priority></url>\n" for u,p,d in GUIDES)+"</urlset>\n"
 w("sitemap.xml",sm)
 print(f"built {len(cars)} car pages, {len(TARIFFS)} tariff pages, 2 index pages, sitemap with {len(urls)} URLs")
