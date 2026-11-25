@@ -55,6 +55,24 @@ TARIFFS = [
              ("Exit fee","£75")],
       pick_note="It works with any car and charger and has the longest window, but has a £75 exit fee.",
       alt_note="works with any car and charger and has a seven-hour window, but has a £75 exit fee"),
+ # Pod Power by EDF: 6.18p 23:00-06:00, whole home, fixed 12 or 18 months, Pod Point charger owners only
+ # (podenergy.com/products/pod-power, checked 25 Nov 2026). EDF shows the day rate only in a quote; 35.21p is the
+ # average quoted by bestchargers.co.uk (Nov 2026). Exit fee not published by Pod or EDF.
+ dict(slug="edf-pod-power", name="Pod Power by EDF", supplier="EDF (sold through Pod)", off=6.18, peak=35.21, hours=7, window="23:00–06:00",
+      url="https://podenergy.com/products/pod-power", smart=False, restricted=True, cond_short="only if you have a Pod Point charger",
+      exit_fee="Not published by Pod or EDF, so check your quote; EDF's GoElectric fixes charge £75",
+      eligibility="A Pod Point home charger (one you already own, or one bought through Pod's shop), an EV, a smart meter and payment by Direct Debit. Electricity is supplied by EDF",
+      peak_title="Average day rate quoted by bestchargers.co.uk; EDF shows your regional day rate in a quote. Checked 25 November 2026.",
+      desc="Pod Power by EDF: 6.18p/kWh off-peak from 11pm to 6am, the cheapest overnight EV rate in the UK, but only for Pod Point charger owners. Day rate, eligibility, what you'd pay per month and how it compares with EDF GoElectric.",
+      blurb="The lowest overnight rate in Britain right now: 6.18p from 11pm to 6am, seven hours every night, for the whole house. The catch is that it's only for people with a Pod Point charger. If you have a different charger, EDF GoElectric gives you the same seven-hour window at 6.66p.",
+      facts=[("Off-peak rate","6.18p per kWh, 23:00–06:00 every night, for the whole home"),
+             ("Day rate","about 35.21p per kWh on average (bestchargers.co.uk); EDF shows your regional rate in a quote"),
+             ("Contract","rates fixed for 12 or 18 months"),
+             ("Eligibility","a Pod Point charger (already installed, or bought through Pod's shop), an EV, a smart meter and Direct Debit"),
+             ("Pod Rewards","optional; Pod says smart charging through its app can earn up to £100 a year"),
+             ("Exit fee","not published by Pod or EDF, so check your quote")],
+      pick_note="It's only for Pod Point charger owners.",
+      alt_note="is only for Pod Point charger owners"),
  # E.ON: 6.5p 00:00-06:00 + app-scheduled slots, fixed 12 months, no exit fee, boost 34.322p (eonnext.com, info correct 16 Nov 2026); MSE avg peak 34.32p.
  dict(slug="eon-next-drive", name="E.ON Next Drive Smart", supplier="E.ON Next", off=6.50, peak=34.32, hours=6, window="00:00–06:00, plus smart-charging slots scheduled in the E.ON Next Home app",
       url="https://www.eonnext.com/tariffs/next-drive/smart", smart=True, exit_fee="None", eligibility="A smart meter sending half-hourly readings and a supported car or charger connected to the E.ON Next Home app; one EV per home",
@@ -253,7 +271,7 @@ def car_page(c):
     v=c["variants"][c["default_variant"]]; name=f'{c["make"]} {c["model"]}'; slug=c["slug"]
     iog=T["intelligent-octopus-go"]; edf=T["edf-goelectric"]
     m_iog=monthly(v,iog); m_cap=monthly(v,T["standard-price-cap"]); m_pet=petrol_monthly()
-    cheapest=min(TARIFFS,key=lambda t:monthly(v,t)); best=min((t for t in TARIFFS if not t.get("flat") or t["slug"]=="ovo-charge-anytime"),key=lambda t:monthly(v,t))
+    cheapest=min(TARIFFS,key=lambda t:monthly(v,t)); best=min((t for t in TARIFFS if (not t.get("flat") or t["slug"]=="ovo-charge-anytime") and not t.get("restricted")),key=lambda t:monthly(v,t))
     if best["slug"]=="utility-warehouse-ev": best=sorted(TARIFFS,key=lambda t:monthly(v,t))[1]
     eff=mi_per_kwh(v); ppm_iog=ppm(v,iog["off"]); ppm_cap=ppm(v,CAP); ppm_pub=ppm(v,PUBLIC_RAPID); ppm_pet=PETROL_PPL*4.546/PETROL_MPG*100
     title=f"{name} charging cost UK 2026: per charge, per mile & per month"
@@ -278,7 +296,7 @@ def car_page(c):
      (f"Which tariff is cheapest for {art(name)} {name}?",
       (f"For an 8,000-mile-a-year driver charging at home, {best['name']} gives the lowest charging bill in our comparison: about {gbp(monthly(v,best))} a month for charging against {gbp(m_cap)} on the price cap. {best.get('pick_note','')} {alt['name']} is almost as cheap at about {gbp(monthly(v,alt))} a month; it {alt.get('alt_note','')}."
        if cheapest["slug"]==best["slug"] else
-       f"For an 8,000-mile-a-year driver charging at home, {cheapest['name']} gives the lowest charging bill in our comparison, but it has conditions. {best['name']} is the best mainstream choice, costing about {gbp(monthly(v,best))} a month for charging against {gbp(m_cap)} on the price cap.").replace("  "," ")),
+       f"For an 8,000-mile-a-year driver charging at home, {cheapest['name']} gives the lowest charging bill in our comparison, about {gbp(monthly(v,cheapest))} a month, but {cheapest.get('cond_short','it has conditions')}. {best['name']} is the best mainstream choice, costing about {gbp(monthly(v,best))} a month for charging against {gbp(m_cap)} on the price cap.").replace("  "," ")),
     ]
     jsonld={"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in faq]}
     body=f"""
@@ -416,7 +434,8 @@ for c in cars: w(f"cars/{c['slug']}/index.html",car_page(c)); urls.append((f"car
 for t in TARIFFS: w(f"tariffs/{t['slug']}/index.html",tariff_page(t)); urls.append((f"tariffs/{t['slug']}/",0.7))
 w("cars/index.html",cars_index()); w("tariffs/index.html",tariffs_index())
 # Hand-written pages (not generated here) that belong in the sitemap; bump their date when you edit them.
-GUIDES=[("guides/cheapest-way-to-charge-ev-at-home/",0.8,"2026-11-17"),("guides/british-gas-electric-driver-tariff/",0.8,"2026-11-17"),("guides/how-much-to-charge-electric-car-at-home/",0.8,"2026-11-23"),("electricity-bill-calculator/",0.8,"2026-11-24")]
-sm='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+"".join(f"  <url><loc>{SITE}/{u}</loc><lastmod>{ISO}</lastmod><changefreq>monthly</changefreq><priority>{p}</priority></url>\n" for u,p in urls)+"".join(f"  <url><loc>{SITE}/{u}</loc><lastmod>{d}</lastmod><changefreq>monthly</changefreq><priority>{p}</priority></url>\n" for u,p,d in GUIDES)+"</urlset>\n"
+LASTMOD={"tariffs/edf-pod-power/":"2026-11-25"}
+GUIDES=[("guides/cheapest-way-to-charge-ev-at-home/",0.8,"2026-11-25"),("guides/british-gas-electric-driver-tariff/",0.8,"2026-11-17"),("guides/how-much-to-charge-electric-car-at-home/",0.8,"2026-11-25"),("electricity-bill-calculator/",0.8,"2026-11-25")]
+sm='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+"".join(f"  <url><loc>{SITE}/{u}</loc><lastmod>{LASTMOD.get(u,ISO)}</lastmod><changefreq>monthly</changefreq><priority>{p}</priority></url>\n" for u,p in urls)+"".join(f"  <url><loc>{SITE}/{u}</loc><lastmod>{d}</lastmod><changefreq>monthly</changefreq><priority>{p}</priority></url>\n" for u,p,d in GUIDES)+"</urlset>\n"
 w("sitemap.xml",sm)
 print(f"built {len(cars)} car pages, {len(TARIFFS)} tariff pages, 2 index pages, sitemap with {len(urls)} URLs")
